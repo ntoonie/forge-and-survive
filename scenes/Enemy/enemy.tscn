@@ -1,50 +1,64 @@
 [gd_scene format=3 uid="uid://bvn51dsg2vhpy"]
 
-[ext_resource type="Texture2D" uid="uid://5g028mr8hxl5" path="res://assets/sprites/711654445_1015358200840850_8115414767051517766_n.png" id="1_7p1mj"]
+[ext_resource type="Texture2D" uid="uid://ldrg8tvvirgn" path="res://assets/sprites/enemy_1.png" id="1_enemy"]
 [ext_resource type="Script" uid="uid://bag2seulvb5k6" path="res://scripts/Enemies/enemy_health.gd" id="1_84vye"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md0e3"]
-size = Vector2(20, 25)
+size = Vector2(17.98005, 16.982544)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4ra3w"]
-atlas = ExtResource("1_7p1mj")
-region = Rect2(0, 0, 345, 330)
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle0"]
+atlas = ExtResource("1_enemy")
+region = Rect2(5, 3, 19, 20)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5uy6h"]
-atlas = ExtResource("1_7p1mj")
-region = Rect2(345, 0, 345, 330)
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle1"]
+atlas = ExtResource("1_enemy")
+region = Rect2(24, 3, 19, 20)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_c4w8v"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_run0"]
+atlas = ExtResource("1_enemy")
+region = Rect2(23, 23, 19, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_run1"]
+atlas = ExtResource("1_enemy")
+region = Rect2(42, 23, 19, 21)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_enemy"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_4ra3w")
+"texture": SubResource("AtlasTexture_idle0")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_5uy6h")
+"texture": SubResource("AtlasTexture_idle1")
 }],
 "loop": true,
-"name": &"default",
-"speed": 3.0
+"name": &"idle",
+"speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run1")
+}],
 "loop": true,
-"name": &"new_animation",
+"name": &"running",
 "speed": 5.0
 }]
 
 [node name="Enemy" type="CharacterBody2D" unique_id=273230036]
+scale = Vector2(2.005, 2.005)
 script = ExtResource("1_84vye")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1721862458]
-position = Vector2(-0.37499237, -5)
-shape = SubResource("RectangleShape2D_md0e3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=878813623]
 texture_filter = 1
-position = Vector2(4.8125, -6.125)
-scale = Vector2(0.10905798, 0.12045449)
-sprite_frames = SubResource("SpriteFrames_c4w8v")
-autoplay = "default"
-frame = 1
-frame_progress = 0.5590411
+position = Vector2(49.875313, 18.952618)
+scale = Vector2(1.45, 1.45)
+sprite_frames = SubResource("SpriteFrames_enemy")
+autoplay = "running"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1721862458]
+position = Vector2(50.37406, 21.446383)
+shape = SubResource("RectangleShape2D_md0e3")
+debug_color = Color(0, 0, 0, 0)

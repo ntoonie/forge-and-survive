@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ctol3dir2hu3p" path="res://scripts/systems/forge.gd" id="1_jvn1s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gr7ai"]
-size = Vector2(64, 64)
+size = Vector2(16, 16)
 
 [node name="Forge" type="StaticBody2D" unique_id=1444986659]
 script = ExtResource("1_jvn1s")

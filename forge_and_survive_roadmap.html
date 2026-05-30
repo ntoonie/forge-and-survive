@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge & Survive — Dev Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #0d0b08;
+    --bg2: #131008;
+    --panel: #1a1508;
+    --panel2: #211b0a;
+    --border: #4a3a18;
+    --border-glow: #c8860a;
+    --gold: #e8a020;
+    --gold2: #f5c842;
+    --amber: #d4680a;
+    --ember: #ff4500;
+    --heat-cold: #2277cc;
+    --heat-warm: #e8a020;
+    --heat-hot: #ff3300;
+    --text: #e8d5a0;
+    --text-dim: #8a7040;
+    --text-bright: #f8e8b8;
+    --green: #4a8830;
+    --phase1: #1e3a1e;
+    --phase2: #3a2a0a;
+    --phase3: #1a2a3a;
+    --phase4: #2a1a3a;
+    --phase5: #3a1a1a;
+    --phase6: #1a3a2a;
+    --phase7: #3a2a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IM Fell English', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ember particle canvas */
+  #ember-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; opacity: 0.35;
+  }
+
+  .page-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  header::before {
+    content: '';
+    position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(24px, 5vw, 52px);
+    color: var(--gold2);
+    text-shadow: 0 0 30px #c8860a88, 0 0 60px #c8860a44;
+    letter-spacing: 4px;
+    line-height: 1.1;
+  }
+  .game-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 6px;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .header-meta {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .header-meta span { color: var(--gold); }
+
+  /* ── MENTOR BANNER ── */
+  .mentor-banner {
+    background: linear-gradient(135deg, #1a1200 0%, #2a1e04 50%, #1a1200 100%);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 16px 20px;
+    margin: 32px 0;
+    font-size: 14px;
+    color: var(--text);
+    font-style: italic;
+    position: relative;
+  }
+  .mentor-banner strong { color: var(--gold); font-style: normal; font-family: 'Cinzel', serif; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 32px 0 0;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+  nav a {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--gold); border-color: var(--border); background: var(--panel2); }
+
+  /* ── PHASE ── */
+  .phase {
+    margin-top: 48px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .phase::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .phase-1::before { background: linear-gradient(90deg, #4a8830, #6ab840, #4a8830); }
+  .phase-2::before { background: linear-gradient(90deg, #a06010, #e8a020, #a06010); }
+  .phase-3::before { background: linear-gradient(90deg, #205090, #4090d0, #205090); }
+  .phase-4::before { background: linear-gradient(90deg, #602080, #9040c0, #602080); }
+  .phase-5::before { background: linear-gradient(90deg, #903020, #d05040, #903020); }
+  .phase-6::before { background: linear-gradient(90deg, #206040, #40a060, #206040); }
+  .phase-7::before { background: linear-gradient(90deg, #806020, #c09030, #806020); }
+
+  .phase-header {
+    padding: 20px 24px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 16px;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .phase-header:hover { background: var(--panel2); }
+  .phase-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 48px;
+    text-align: center;
+    line-height: 1;
+  }
+  .phase-1 .phase-number { color: #6ab840; }
+  .phase-2 .phase-number { color: #e8a020; }
+  .phase-3 .phase-number { color: #4090d0; }
+  .phase-4 .phase-number { color: #9040c0; }
+  .phase-5 .phase-number { color: #d05040; }
+  .phase-6 .phase-number { color: #40a060; }
+  .phase-7 .phase-number { color: #c09030; }
+
+  .phase-title-group { flex: 1; }
+  .phase-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .phase-title {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-top: 2px;
+  }
+  .phase-toggle {
+    font-size: 20px;
+    color: var(--text-dim);
+    transition: transform 0.3s;
+  }
+  .phase-header.open .phase-toggle { transform: rotate(180deg); }
+
+  .phase-body {
+    display: none;
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .phase-body.open { display: block; }
+
+  /* ── MILESTONE ── */
+  .milestone {
+    margin-top: 28px;
+    border-left: 2px solid var(--border);
+    padding-left: 20px;
+    position: relative;
+  }
+  .milestone::before {
+    content: '◆';
+    position: absolute; left: -9px; top: 2px;
+    font-size: 10px;
+    color: var(--gold);
+    background: var(--bg);
+    padding: 1px 0;
+  }
+  .milestone-number {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .milestone-title {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold2);
+    margin: 4px 0 12px;
+  }
+
+  /* ── SECTIONS INSIDE MILESTONE ── */
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .section-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .section-card.full-width { grid-column: 1 / -1; }
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-card p, .section-card li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .section-card ul, .section-card ol { padding-left: 18px; }
+  .section-card li { margin-top: 4px; }
+  .section-card code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--gold2);
+    background: rgba(255,200,0,0.07);
+    padding: 1px 4px;
+  }
+  .section-card pre {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--gold2);
+    background: rgba(0,0,0,0.4);
+    padding: 12px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* ── TAGS ── */
+  .tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid;
+    margin: 2px;
+    letter-spacing: 1px;
+  }
+  .tag-node { color: #4090d0; border-color: #4090d030; background: #4090d010; }
+  .tag-script { color: #6ab840; border-color: #6ab84030; background: #6ab84010; }
+  .tag-warn { color: var(--amber); border-color: #c8860a30; background: #c8860a10; }
+  .tag-done { color: #40a060; border-color: #40a06030; background: #40a06010; }
+
+  /* ── WARNING BOX ── */
+  .warn-box {
+    background: #2a1000;
+    border: 1px solid #804020;
+    border-left: 3px solid var(--amber);
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    font-style: italic;
+  }
+  .warn-box strong { color: var(--amber); font-style: normal; }
+
+  /* ── CHECKLIST ── */
+  .checklist li {
+    list-style: none;
+    padding-left: 22px;
+    position: relative;
+    margin-top: 5px;
+    font-size: 13px;
+  }
+  .checklist li::before {
+    content: '☐';
+    position: absolute; left: 0;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ── FOLDER TREE ── */
+  .folder-tree {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.8;
+    color: var(--text);
+    background: rgba(0,0,0,0.4);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+  .folder-tree .dir { color: var(--gold); }
+  .folder-tree .file { color: #a0e060; }
+  .folder-tree .comment { color: var(--text-dim); font-style: italic; }
+
+  /* ── HEAT METER DEMO ── */
+  .heat-demo {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin-top: 12px;
+  }
+  .heat-bar-wrap {
+    flex: 1;
+    height: 16px;
+    border: 1px solid var(--border);
+    background: #0a0806;
+    position: relative;
+    overflow: hidden;
+  }
+  .heat-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2277cc 0%, #e8a020 50%, #ff3300 100%);
+    width: 70%;
+    animation: heat-pulse 3s ease-in-out infinite alternate;
+    transition: width 0.5s;
+  }
+  @keyframes heat-pulse { from { width: 70%; } to { width: 85%; } }
+  .heat-label { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); }
+
+  /* ── SA EXPLAINER ── */
+  .sa-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sa-step:last-child { border-bottom: none; }
+  .sa-step-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 18px;
+    color: var(--amber);
+    min-width: 28px;
+    text-align: center;
+  }
+  .sa-step-text { font-size: 13px; line-height: 1.6; }
+  .sa-step-text strong { color: var(--gold); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+  }
+
+  /* ── RULE ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+    position: relative;
+  }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--border-glow);
+    color: var(--gold);
+    background: rgba(200,134,10,0.1);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="ember-canvas"></canvas>
+
+<div class="page-wrap">
+
+<header>
+  <div class="game-title">Forge &amp; Survive</div>
+  <div class="game-subtitle">Complete Development Roadmap &nbsp;·&nbsp; COSC 304 &nbsp;·&nbsp; BSCS 3-2</div>
+  <div class="header-meta">
+    Group 9 &nbsp;|&nbsp;
+    <span>Bermudez</span> &nbsp;·&nbsp;
+    <span>Madelo</span> &nbsp;·&nbsp;
+    <span>Martinez</span> &nbsp;·&nbsp;
+    <span>Lee</span>
+    &nbsp;|&nbsp; Polytechnic University of the Philippines
+  </div>
+</header>
+
+<nav>
+  <a href="#phase1">Phase 1: Setup</a>
+  <a href="#phase2">Phase 2: Core Gameplay</a>
+  <a href="#phase3">Phase 3: Defense</a>
+  <a href="#phase4">Phase 4: Enemies</a>
+  <a href="#phase5">Phase 5: Game Loop</a>
+  <a href="#phase6">Phase 6: AI (SA)</a>
+  <a href="#phase7">Phase 7: Polish</a>
+</nav>
+
+<div class="mentor-banner">
+  <strong>Mentor's Ground Rule:</strong> When you ask "What should I do next?" — you will always receive <em>only one milestone</em>. We do not skip ahead. Every feature is tested before the next begins. Prototypes first, polish last.
+</div>
+
+<!-- ═══════════════════════════════════════════════ PHASE 1 ═══ -->
+<section class="phase phase-1" id="phase1">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">I</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 1</div>
+      <div class="phase-title">Project Setup</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M1.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 1.1</div>
+      <div class="milestone-title">Install Tools &amp; Create Godot Project</div>
+
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>Get a blank Godot 4.x project running on your machine. Nothing fancier than a grey window.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Why We Build This First</div>
+          <p>You cannot build anything without a working project. Installing and configuring now means every future step has zero setup friction.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Installations Needed</div>
+          <ul>
+            <li><strong>Godot 4.x</strong> — Download from <code>godotengine.org</code>. Choose the Standard build (not .NET/C#).</li>
+            <li><strong>Git</strong> — Download from <code>git-scm.com</code>. Needed for version control.</li>
+            <li><strong>VS Code</strong> (optional) — Better syntax highlighting for GDScript than the built-in editor.</li>
+            <li><strong>Python 3.x</strong> — Only needed for Phase 6 SA prototyping.</li>
+          </ul>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Godot Project Creation — Step by Step</div>
+          <ol>
+            <li>Open Godot → click <strong>New Project</strong>.</li>
+            <li>Name it <code>ForgeAndSurvive</code>. Choose a folder (not your Desktop).</li>
+            <li>Renderer: choose <strong>Compatibility</strong> (works on all hardware, perfect for 2D).</li>
+            <li>Click <strong>Create &amp; Edit</strong>.</li>
+            <li>Press <strong>F5</strong> — you should see a grey window. That's your first milestone done.</li>
+          </ol>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Recommended Folder Structure</div>
+          <div class="folder-tree">
+<span class="dir">ForgeAndSurvive/</span><br>
+├── <span class="dir">scenes/</span><br>
+│   ├── <span class="dir">world/</span>      <span class="comment"># Main map scene</span><br>
+│   ├── <span class="dir">player/</span>     <span class="comment"># Player scene</span><br>
+│   ├── <span class="dir">enemies/</span>    <span class="comment"># Enemy scenes</span><br>
+│   ├── <span class="dir">structures/</span> <span class="comment"># Wall, tower, trap scenes</span><br>
+│   └── <span class="dir">ui/</span>         <span class="comment"># HUD, menus</span><br>
+├── <span class="dir">scripts/</span><br>
+│   ├── <span class="dir">player/</span><br>
+│   ├── <span class="dir">enemies/</span><br>
+│   ├── <span class="dir">systems/</span>    <span class="comment"># Game loop, wave manager, etc.</span><br>
+│   └── <span class="dir">ai/</span>         <span class="comment"># Pathfinding, SA (later)</span><br>
+├── <span class="dir">assets/</span><br>
+│   ├── <span class="dir">sprites/</span><br>
+│   ├── <span class="dir">audio/</span><br>
+│   └── <span class="dir">fonts/</span><br>
+├── <span class="dir">shaders/</span><br>
+└── <span class="file">project.godot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M1.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 1.2</div>
+      <div class="milestone-title">GitHub Setup &amp; First Commit</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Why Version Control From Day 1</div>
+          <p>You will make mistakes. Git lets you travel back in time. Never skip this — a lost week of code is devastating for a 4-week project.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Step by Step</div>
+          <ol>
+            <li>Create a new repo on GitHub named <code>ForgeAndSurvive</code>.</li>
+            <li>In Godot's project folder, open a terminal and run:</li>
+          </ol>
+          <pre>git init
+git add .
+git commit -m "Initial Godot project"
+git branch -M main
+git remote add origin [your-repo-url]
+git push -u origin main</pre>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Critical: Add a .gitignore</div>
+          <p>Create a file named <code>.gitignore</code> in the project root with:</p>
+          <pre># Godot 4 gitignore
+.godot/
+*.import
+export_presets.cfg</pre>
+          <p style="margin-top:8px; font-size:13px;">This prevents Godot's auto-generated cache files from cluttering your repo.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Commit Convention</div>
+          <p>Use short, descriptive messages: <code>feat: player movement</code>, <code>fix: enemy spawn crash</code>, <code>chore: folder cleanup</code>. Commit after every milestone completion.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Definition of Done</div>
+          <ul class="checklist">
+            <li>Godot project opens without errors</li>
+            <li>Folder structure created</li>
+            <li>GitHub repo exists with initial commit</li>
+            <li>F5 shows a running (grey) window</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M1.3 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 1.3</div>
+      <div class="milestone-title">Scene Architecture — The Master Scene</div>
+      <div class="section-grid">
+        <div class="section-card full-width">
+          <div class="section-label">Why Scene Architecture Matters</div>
+          <p>Godot works on a <strong>Scene Tree</strong>. Every object is a Scene. Getting the hierarchy wrong now means painful refactoring later. Set this up once, correctly.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Scenes to Create Now</div>
+          <ul>
+            <li><code>Main.tscn</code> — Root scene. Just a Node2D. This is what runs when the game starts.</li>
+            <li><code>World.tscn</code> — The game map (child of Main).</li>
+            <li><code>HUD.tscn</code> — UI overlay (child of Main, CanvasLayer).</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Godot Nodes Required</div>
+          <ul>
+            <li><span class="tag tag-node">Node2D</span> for Main &amp; World</li>
+            <li><span class="tag tag-node">CanvasLayer</span> for HUD (ensures UI stays on top)</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Common Mistakes</div>
+          <ul>
+            <li>❌ Putting UI elements directly in the World scene — they will scroll with the camera</li>
+            <li>❌ Putting game logic in Main — Main should only connect scenes together</li>
+            <li>❌ Naming scenes generically (scene1.tscn) — use clear names immediately</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 2 ═══ -->
+<section class="phase phase-2" id="phase2">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">II</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 2</div>
+      <div class="phase-title">Core Gameplay</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M2.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 2.1</div>
+      <div class="milestone-title">Tilemap &amp; Basic Map</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>Create a walkable 2D grid map using Godot's built-in TileMap. Use colored rectangles as placeholder tiles — NO real art yet.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Why Before Player Movement</div>
+          <p>The player needs <em>somewhere</em> to walk. The tilemap defines the world's grid — every other system (pathfinding, building placement) depends on knowing the grid size and tile coordinates.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Godot 4 TileMap Setup — Step by Step</div>
+          <ol>
+            <li>In World.tscn, add a <span class="tag tag-node">TileMapLayer</span> node (Godot 4.x replaced TileMap with TileMapLayer).</li>
+            <li>In the Inspector → TileSet → New TileSet.</li>
+            <li>Tile Size: <strong>32×32 pixels</strong> (recommended for 2D top-down). Commit to this — changing it later breaks everything.</li>
+            <li>For now, use a placeholder: create a 32×32 PNG of solid green for grass, solid grey for path, solid brown for dirt.</li>
+            <li>Paint a simple 30×20 tile map. The forge goes in the center. Spawn points at the edges.</li>
+          </ol>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Free Placeholder Assets</div>
+          <ul>
+            <li><strong>Kenney.nl</strong> — Free 2D pixel art packs. Search "Kenney tiny dungeon".</li>
+            <li><strong>OpenGameArt.org</strong> — Free assets under CC0 license.</li>
+            <li>For now: <em>solid colored squares work fine</em>. Do not spend time on art.</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Common Mistakes</div>
+          <ul>
+            <li>❌ Making the map too big — start with 30×20 tiles max</li>
+            <li>❌ Mixing tile sizes — pick 32×32 and never change it</li>
+            <li>❌ Spending hours on art — use colored squares</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Definition of Done</div>
+          <ul class="checklist">
+            <li>TileMapLayer node in World.tscn</li>
+            <li>At least 3 tile types (grass, path, wall)</li>
+            <li>Map is 30×20 tiles or larger</li>
+            <li>Forge center position is visible</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 2.2</div>
+      <div class="milestone-title">Player Movement</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>A placeholder sprite (a colored square) that the player can move with WASD or arrow keys. Smooth top-down movement, no animation yet.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Godot Nodes Required</div>
+          <ul>
+            <li><span class="tag tag-node">CharacterBody2D</span> — the player's physics body</li>
+            <li><span class="tag tag-node">CollisionShape2D</span> — hitbox (use RectangleShape2D)</li>
+            <li><span class="tag tag-node">Sprite2D</span> or <span class="tag tag-node">ColorRect</span> — placeholder visual</li>
+            <li><span class="tag tag-node">Camera2D</span> — follow the player</li>
+          </ul>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Script: player.gd — Core Movement</div>
+          <pre>extends CharacterBody2D
+
+const SPEED = 150.0
+
+func _physics_process(delta):
+    var direction = Vector2.ZERO
+    direction.x = Input.get_axis("ui_left", "ui_right")
+    direction.y = Input.get_axis("ui_up", "ui_down")
+    
+    if direction != Vector2.ZERO:
+        direction = direction.normalized()
+    
+    velocity = direction * SPEED
+    move_and_slide()</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Scene Structure</div>
+          <pre>Player.tscn
+└── CharacterBody2D (player.gd)
+    ├── CollisionShape2D
+    ├── Sprite2D (placeholder)
+    └── Camera2D</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">⚠️ Overengineering Warning</div>
+          <div class="warn-box">
+            <strong>STOP.</strong> Do NOT add: animation, sprinting, rolling, stamina bars, inventory, or any other mechanic. Movement only. Test movement only. Move to M2.3 only after the square moves correctly.
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Definition of Done</div>
+          <ul class="checklist">
+            <li>Player appears as a sprite/square in the world</li>
+            <li>WASD / arrow keys move the player</li>
+            <li>Camera follows the player</li>
+            <li>Player collides with TileMap walls</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2.3 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 2.3</div>
+      <div class="milestone-title">Resource Nodes &amp; Gathering</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>Place 3 resource nodes on the map (iron, wood, stone). Player walks up and presses E to gather. Resources add to a counter. That's it.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Nodes Required</div>
+          <ul>
+            <li><span class="tag tag-node">Area2D</span> — triggers gathering when player enters range</li>
+            <li><span class="tag tag-node">CollisionShape2D</span> — defines pickup radius</li>
+            <li><span class="tag tag-node">Label</span> — shows resource count above node</li>
+          </ul>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Script: resource_node.gd</div>
+          <pre>extends Area2D
+
+@export var resource_type: String = "iron"
+@export var amount: int = 50
+@export var respawn_time: float = 10.0
+
+var player_nearby = false
+
+func _ready():
+    body_entered.connect(_on_body_entered)
+    body_exited.connect(_on_body_exited)
+
+func _process(_delta):
+    if player_nearby and Input.is_action_just_pressed("interact"):
+        _gather()
+
+func _on_body_entered(body):
+    if body.is_in_group("player"):
+        player_nearby = true
+
+func _on_body_exited(body):
+    if body.is_in_group("player"):
+        player_nearby = false
+
+func _gather():
+    GameData.add_resource(resource_type, amount)
+    queue_free()   # or start respawn timer</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">GameData — Autoload (Singleton)</div>
+          <p>Create <code>scripts/systems/game_data.gd</code> and register it as an Autoload in Project → Settings → Autoload. This is your global state store.</p>
+          <pre>extends Node
+
+var resources = {
+    "iron": 0,
+    "wood": 0,
+    "stone": 0
+}
+
+func add_resource(type: String, amount: int):
+    resources[type] += amount</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Common Mistakes</div>
+          <ul>
+            <li>❌ Using get_node() to find the player instead of groups — use <code>add_to_group("player")</code> on CharacterBody2D</li>
+            <li>❌ Building a complex inventory UI before the gathering works</li>
+            <li>❌ Forgetting to add the interact action in Project → Input Map</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2.4 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 2.4</div>
+      <div class="milestone-title">Basic HUD — Resource Counters</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>A simple on-screen UI showing Iron, Wood, Stone counts. Text only. No fancy art.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Nodes Required</div>
+          <ul>
+            <li><span class="tag tag-node">CanvasLayer</span> — already created in Phase 1</li>
+            <li><span class="tag tag-node">VBoxContainer</span> inside CanvasLayer</li>
+            <li>3× <span class="tag tag-node">Label</span> nodes — Iron: 0, Wood: 0, Stone: 0</li>
+          </ul>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Connecting HUD to GameData</div>
+          <pre>extends CanvasLayer
+
+@onready var iron_label = $VBox/IronLabel
+@onready var wood_label = $VBox/WoodLabel
+
+func _process(_delta):
+    iron_label.text = "Iron: " + str(GameData.resources["iron"])
+    wood_label.text = "Wood: " + str(GameData.resources["wood"])</pre>
+          <p style="margin-top:8px; font-size:12px; color: var(--text-dim);">Note: polling in _process is fine for now. Use signals for optimization later.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 3 ═══ -->
+<section class="phase phase-3" id="phase3">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">III</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 3</div>
+      <div class="phase-title">Defense System</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M3.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 3.1</div>
+      <div class="milestone-title">Structure Placement System</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>Player can press a key to enter "build mode." A ghost preview follows the cursor snapped to the grid. Clicking places a placeholder colored square. Costs resources.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Why This Is the Hardest Part of Phase 3</div>
+          <p>Grid snapping, valid placement checking, ghost preview, and resource deduction must all work together. Build this carefully — it is the foundation of the entire defense loop.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Core Logic — build_system.gd</div>
+          <pre>extends Node
+
+var build_mode = false
+var selected_structure = "wall"
+var ghost_preview: Node2D
+
+const TILE_SIZE = 32
+
+func _process(_delta):
+    if Input.is_action_just_pressed("toggle_build"):
+        build_mode = !build_mode
+    
+    if build_mode:
+        _update_ghost_position()
+        if Input.is_action_just_pressed("place"):
+            _place_structure()
+
+func _grid_snap(world_pos: Vector2) -> Vector2:
+    return Vector2(
+        floor(world_pos.x / TILE_SIZE) * TILE_SIZE,
+        floor(world_pos.y / TILE_SIZE) * TILE_SIZE
+    )
+
+func _place_structure():
+    if not _can_afford(selected_structure):
+        return  # Show "not enough resources" feedback
+    var pos = _grid_snap(get_viewport().get_mouse_position())
+    # Instantiate structure scene at pos
+    # Deduct resources from GameData</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Placement Validation</div>
+          <p>Before placing, check:</p>
+          <ul>
+            <li>Is this tile already occupied?</li>
+            <li>Is this a valid build tile (not water, not a resource node)?</li>
+            <li>Does the player have enough resources?</li>
+          </ul>
+          <p style="margin-top:8px; font-size:12px; font-style:italic;">Use a Dictionary to track occupied tiles: <code>occupied_tiles[Vector2i]</code></p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">⚠️ Overengineering Warning</div>
+          <div class="warn-box">
+            <strong>Build only one structure type first (Wall).</strong> Do not build the full catalogue. Prove the placement system works with a single type before adding more.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M3.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 3.2</div>
+      <div class="milestone-title">Walls, Towers &amp; Traps — Health System</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Structure Types (Build in this order)</div>
+          <ol>
+            <li><strong>Wall</strong> — Blocks movement. Has health. Cost: 5 stone.</li>
+            <li><strong>Arrow Tower</strong> — Ranged attack. Has health. Cost: 10 wood + 5 iron.</li>
+            <li><strong>Spike Trap</strong> — Damages enemies that walk over it. Cost: 8 iron.</li>
+          </ol>
+          <p style="margin-top:8px; font-size:12px; font-style:italic;">Build and test each one separately before adding the next.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Health System — structure_health.gd</div>
+          <pre>extends Node
+
+@export var max_health: int = 100
+var current_health: int
+
+func _ready():
+    current_health = max_health
+
+func take_damage(amount: int):
+    current_health -= amount
+    if current_health <= 0:
+        get_parent().queue_free()
+
+func heal(amount: int):
+    current_health = min(
+        current_health + amount, 
+        max_health
+    )</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Arrow Tower Logic</div>
+          <p>The tower needs to detect enemies in range. Use an <span class="tag tag-node">Area2D</span> with a large CircleShape2D as the "attack range." When an enemy enters, the tower fires a projectile.</p>
+          <p style="margin-top:8px; font-size:12px; font-style:italic;">Projectile = Area2D that moves in a direction and calls take_damage() on collision.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Common Mistakes</div>
+          <ul>
+            <li>❌ Using StaticBody2D for walls that need health — use Area2D or CharacterBody2D so you can call queue_free()</li>
+            <li>❌ Hardcoding costs everywhere — store them in a Dictionary constant</li>
+            <li>❌ Building all 3 structures before testing placement</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Forge Health</div>
+          <p>The Forge is just a structure with very high health (300). It uses the same <code>structure_health.gd</code> script. When its health reaches 0, the game ends.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 4 ═══ -->
+<section class="phase phase-4" id="phase4">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">IV</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 4</div>
+      <div class="phase-title">Enemy System</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M4.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 4.1</div>
+      <div class="milestone-title">Enemy Scene &amp; Basic Spawning</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>A placeholder enemy (colored red square) spawns at the edge of the map. It has health. It can die. That's all for this milestone.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Nodes Required</div>
+          <ul>
+            <li><span class="tag tag-node">CharacterBody2D</span> — enemy physics body (raider.gd)</li>
+            <li><span class="tag tag-node">CollisionShape2D</span> — hitbox</li>
+            <li><span class="tag tag-node">HealthComponent</span> — reuse structure_health.gd or make enemy_health.gd</li>
+            <li><span class="tag tag-node">Marker2D</span> nodes at map edges — spawn points</li>
+          </ul>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">wave_manager.gd — Spawner Skeleton</div>
+          <pre>extends Node
+
+@export var enemy_scene: PackedScene
+@export var spawn_points: Array[Marker2D]
+
+var current_wave = 0
+var enemies_remaining = 0
+
+func start_wave(wave_number: int):
+    current_wave = wave_number
+    var count = 3 + wave_number * 2   # Scale with waves
+    for i in count:
+        await get_tree().create_timer(0.5).timeout
+        _spawn_enemy()
+
+func _spawn_enemy():
+    var enemy = enemy_scene.instantiate()
+    var spawn = spawn_points.pick_random()
+    enemy.global_position = spawn.global_position
+    get_tree().current_scene.add_child(enemy)
+    enemies_remaining += 1</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Enemy Death Signal</div>
+          <p>When an enemy dies, it should emit a signal so the WaveManager can decrement <code>enemies_remaining</code> and detect when the wave is cleared.</p>
+          <pre>signal died
+
+func die():
+    died.emit()
+    queue_free()</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- M4.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 4.2</div>
+      <div class="milestone-title">A* Pathfinding — Enemies Navigate to Forge</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>Enemies find a valid path to the Forge using Godot's built-in A* grid pathfinding. They walk along that path. They stop when they reach the Forge and deal damage.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Why A* Before SA?</div>
+          <p>A* is guaranteed to find <em>a</em> path. Simulated Annealing finds <em>a good</em> path. We need working navigation first. SA will replace/supplement A* in Phase 6.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Godot 4 AStar2D Setup</div>
+          <pre># In a pathfinding_manager.gd (Autoload)
+extends Node
+
+var astar = AStar2D.new()
+const TILE_SIZE = 32
+
+func setup_grid(tilemap: TileMapLayer):
+    astar.clear()
+    # Add all walkable tiles as AStar points
+    var cells = tilemap.get_used_cells()
+    for cell in cells:
+        var id = _cell_to_id(cell)
+        var world_pos = tilemap.map_to_local(cell)
+        astar.add_point(id, world_pos)
+    # Connect adjacent walkable tiles
+    for cell in cells:
+        _connect_neighbors(cell)
+
+func get_path(from: Vector2, to: Vector2) -> PackedVector2Array:
+    var from_id = astar.get_closest_point(from)
+    var to_id = astar.get_closest_point(to)
+    return astar.get_point_path(from_id, to_id)
+
+func _cell_to_id(cell: Vector2i) -> int:
+    return cell.x * 1000 + cell.y   # Simple unique ID</pre>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Enemy Following the Path — raider.gd</div>
+          <pre>extends CharacterBody2D
+
+const SPEED = 80.0
+var path: PackedVector2Array = []
+var path_index = 0
+
+func set_path(new_path: PackedVector2Array):
+    path = new_path
+    path_index = 0
+
+func _physics_process(delta):
+    if path_index >= path.size():
+        return  # Reached destination
+    var target = path[path_index]
+    var direction = (target - global_position).normalized()
+    velocity = direction * SPEED
+    move_and_slide()
+    if global_position.distance_to(target) < 5.0:
+        path_index += 1</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Important: Update Path on Structure Change</div>
+          <p>When the player places a wall, it blocks a tile. You must call <code>PathfindingManager.setup_grid()</code> again to re-compute the grid, then recalculate all enemy paths. This is critical and is exactly the behavior SA will refine later.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Testing Checklist</div>
+          <ul class="checklist">
+            <li>Enemy spawns at edge</li>
+            <li>Enemy walks to Forge avoiding walls</li>
+            <li>Placing a new wall forces enemy to find alternate route</li>
+            <li>Enemy deals damage on reaching Forge</li>
+            <li>Enemy dies when health reaches 0</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 5 ═══ -->
+<section class="phase phase-5" id="phase5">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">V</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 5</div>
+      <div class="phase-title">Complete Game Loop</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M5.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 5.1</div>
+      <div class="milestone-title">Day/Night Cycle — Phase Switching</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Goal</div>
+          <p>The game alternates between Build Phase (day, 60 seconds) and Defense Phase (night, until wave cleared). A visible timer counts down. A clear visual change indicates the phase shift.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">game_loop.gd — State Machine</div>
+          <pre>extends Node
+
+enum Phase { BUILD, DEFENSE }
+var current_phase = Phase.BUILD
+var build_timer = 60.0
+var wave_number = 0
+
+signal phase_changed(new_phase)
+
+func _process(delta):
+    if current_phase == Phase.BUILD:
+        build_timer -= delta
+        if build_timer <= 0:
+            _start_defense_phase()
+
+func _start_defense_phase():
+    current_phase = Phase.DEFENSE
+    wave_number += 1
+    phase_changed.emit(Phase.DEFENSE)
+    WaveManager.start_wave(wave_number)
+
+func on_wave_cleared():
+    current_phase = Phase.BUILD
+    build_timer = 60.0
+    phase_changed.emit(Phase.BUILD)</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Visual Phase Indicator</div>
+          <p>During Build Phase: bright sky tone, yellow tint on world.</p>
+          <p>During Defense Phase: dark overlay via a <span class="tag tag-node">ColorRect</span> with dark blue color at 60% transparency layered over the world. This is cheap and effective.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Build Phase Rules</div>
+          <ul>
+            <li>Player can gather resources and place structures</li>
+            <li>No enemies spawn</li>
+            <li>Countdown timer visible on HUD</li>
+            <li>Player can optionally end build phase early</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Defense Phase Rules</div>
+          <ul>
+            <li>Player cannot place new structures</li>
+            <li>Can still move and activate abilities</li>
+            <li>Wave ends when all enemies are dead</li>
+            <li>Wave cleared → back to Build Phase</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M5.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 5.2</div>
+      <div class="milestone-title">Victory &amp; Defeat Conditions</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Victory Condition</div>
+          <p>Survive all 20 waves with the Forge intact → show a Victory screen.</p>
+          <pre>func check_victory():
+    if wave_number >= 20 and enemies_remaining == 0:
+        get_tree().change_scene_to_file(
+            "res://scenes/ui/victory_screen.tscn"
+        )</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Defeat Condition</div>
+          <p>The Forge's health reaches 0 → show a Defeat screen.</p>
+          <pre>func on_forge_destroyed():
+    get_tree().change_scene_to_file(
+        "res://scenes/ui/defeat_screen.tscn"
+    )</pre>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Victory/Defeat Screens</div>
+          <p>Simple scenes with a <span class="tag tag-node">Label</span> ("You Survived!" or "The Forge Has Fallen") and two <span class="tag tag-node">Button</span> nodes: Retry and Quit. Nothing else. Polish comes in Phase 7.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">✅ Milestone 5 Complete = Playable Prototype</div>
+          <div class="warn-box" style="background: #0a2a0a; border-color: #4a8830; border-left-color: #6ab840;">
+            <strong style="color: #6ab840;">At this point, you have a complete playable game.</strong> A player gathers resources, builds defenses, survives enemy waves, and can win or lose. This is your <em>minimum viable product</em>. Everything from here is an enhancement.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 6 ═══ -->
+<section class="phase phase-6" id="phase6">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">VI</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 6</div>
+      <div class="phase-title">AI Integration — Simulated Annealing</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M6.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 6.1</div>
+      <div class="milestone-title">Understanding Simulated Annealing</div>
+      <div class="section-grid">
+        <div class="section-card full-width">
+          <div class="section-label">SA in Plain Language</div>
+          <div class="sa-step">
+            <div class="sa-step-num">1</div>
+            <div class="sa-step-text"><strong>Start hot.</strong> The algorithm begins "hot" — it tries many random paths, even bad ones. Like a raider who is confused and sprints everywhere exploring options.</div>
+          </div>
+          <div class="sa-step">
+            <div class="sa-step-num">2</div>
+            <div class="sa-step-text"><strong>Pick a neighbor.</strong> Take the current path and slightly modify it (shift one waypoint). This is the "neighboring solution."</div>
+          </div>
+          <div class="sa-step">
+            <div class="sa-step-num">3</div>
+            <div class="sa-step-text"><strong>Is it better?</strong> Calculate a cost score: shorter path = better. Avoids traps = better. If the new path is better, always accept it.</div>
+          </div>
+          <div class="sa-step">
+            <div class="sa-step-num">4</div>
+            <div class="sa-step-text"><strong>Sometimes accept worse.</strong> Even if the new path is worse, accept it with probability P = e^(-ΔCost/Temperature). This prevents the algorithm from getting stuck.</div>
+          </div>
+          <div class="sa-step">
+            <div class="sa-step-num">5</div>
+            <div class="sa-step-text"><strong>Cool down.</strong> Each iteration, multiply temperature by 0.95. As temperature drops, the algorithm accepts fewer bad moves and "settles" on a good path.</div>
+          </div>
+          <div class="sa-step">
+            <div class="sa-step-num">6</div>
+            <div class="sa-step-text"><strong>Stop.</strong> When temperature is near zero, the algorithm is "frozen" on its best found path. Assign that path to the raider.</div>
+          </div>
+        </div>
+
+        <div class="section-card full-width">
+          <div class="section-label">SA vs A* — The Key Difference</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <p style="font-family:'Cinzel',serif; font-size:12px; color:#4090d0; margin-bottom:6px;">A* Pathfinding</p>
+              <ul>
+                <li>Guarantees the shortest path</li>
+                <li>Always the same result</li>
+                <li>Ignores "soft" costs (traps, exposure)</li>
+                <li>Players can predict and exploit it</li>
+                <li>Fast and simple to implement</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-family:'Cinzel',serif; font-size:12px; color:#40a060; margin-bottom:6px;">Simulated Annealing</p>
+              <ul>
+                <li>Finds a <em>near-optimal</em> path</li>
+                <li>Varies each run (unpredictable)</li>
+                <li>Considers trap penalties &amp; exposure</li>
+                <li>Adapts to your defense layout</li>
+                <li>Computationally heavier</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card full-width">
+          <div class="section-label">Heat Meter — What It Shows Players</div>
+          <div class="heat-demo">
+            <span class="heat-label">COLD</span>
+            <div class="heat-bar-wrap"><div class="heat-fill"></div></div>
+            <span class="heat-label">HOT</span>
+          </div>
+          <p style="margin-top:12px; font-size:13px;">
+            <strong style="color:#2277cc;">Cold (blue):</strong> Raiders are "committed" — they've locked onto a path. Predictable for a moment.<br>
+            <strong style="color:#e8a020;">Warm (amber):</strong> Raiders are weighing options. Somewhat unpredictable.<br>
+            <strong style="color:#ff3300;">Hot (red):</strong> Raiders are in full exploration mode. Erratic, probing every gap in your defense.<br><br>
+            The <strong style="color:var(--gold);">Distraction ability</strong> spikes the temperature back to Hot, forcing re-exploration.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- M6.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 6.2</div>
+      <div class="milestone-title">Python Prototype (Before GDScript)</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Why Prototype in Python First?</div>
+          <p>SA is tricky to debug in a running game. Python lets you visualize the path optimization in isolation, tune your cost function, and verify the algorithm is working before putting it in Godot.</p>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">sa_prototype.py — Minimal SA Pathfinder</div>
+          <pre>import math, random
+
+def cost(path, grid, traps):
+    total = len(path)   # Shorter = better
+    for cell in path:
+        if cell in traps:
+            total += 50  # Trap penalty
+    return total
+
+def neighbor(path):
+    # Shift a random middle waypoint
+    new_path = path.copy()
+    idx = random.randint(1, len(path)-2)
+    x, y = new_path[idx]
+    new_path[idx] = (x + random.randint(-1,1),
+                     y + random.randint(-1,1))
+    return new_path
+
+def simulated_annealing(initial_path, grid, traps,
+                         T=100.0, cooling=0.95, iterations=500):
+    current = initial_path
+    best = current
+    for _ in range(iterations):
+        T *= cooling
+        candidate = neighbor(current)
+        dCost = cost(candidate, grid, traps) - cost(current, grid, traps)
+        if dCost < 0 or random.random() < math.exp(-dCost / max(T, 0.001)):
+            current = candidate
+            if cost(current, grid, traps) < cost(best, grid, traps):
+                best = current
+    return best</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Testing Your Python Prototype</div>
+          <ul>
+            <li>Plot the initial A* path in blue</li>
+            <li>Run SA and plot the result in red</li>
+            <li>Add trap cells, re-run — verify SA avoids them</li>
+            <li>Once it works visually, port to GDScript</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M6.3 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 6.3</div>
+      <div class="milestone-title">GDScript SA Integration</div>
+      <div class="section-grid">
+        <div class="section-card full-width">
+          <div class="section-label">sa_pathfinder.gd — GDScript Port</div>
+          <pre>extends Node
+
+const INITIAL_TEMP = 100.0
+const COOLING_RATE = 0.95
+const ITERATIONS = 300
+
+var current_temperature: float = INITIAL_TEMP
+
+signal temperature_changed(new_temp)
+
+func find_path(initial_path: PackedVector2Array,
+               trap_positions: Array) -> PackedVector2Array:
+    var current = initial_path.duplicate()
+    var best = current.duplicate()
+    current_temperature = INITIAL_TEMP
+    
+    for _i in ITERATIONS:
+        current_temperature *= COOLING_RATE
+        var candidate = _get_neighbor(current)
+        var delta = _cost(candidate, trap_positions) - \
+                    _cost(current, trap_positions)
+        if delta < 0 or randf() < exp(-delta / max(current_temperature, 0.001)):
+            current = candidate
+            if _cost(current, trap_positions) < _cost(best, trap_positions):
+                best = current.duplicate()
+        temperature_changed.emit(current_temperature)
+    
+    return best
+
+func _cost(path: PackedVector2Array, traps: Array) -> float:
+    var total = float(path.size())
+    for point in path:
+        if point in traps:
+            total += 50.0
+    return total
+
+func _get_neighbor(path: PackedVector2Array) -> PackedVector2Array:
+    if path.size() < 3:
+        return path
+    var new_path = path.duplicate()
+    var idx = randi_range(1, path.size() - 2)
+    new_path[idx] += Vector2(
+        float(randi_range(-1, 1)) * 32,
+        float(randi_range(-1, 1)) * 32
+    )
+    return new_path
+
+func spike_temperature(spike_amount: float = 50.0):
+    current_temperature += spike_amount
+    temperature_changed.emit(current_temperature)</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Integration with Raider</div>
+          <p>In raider.gd, replace the A* path call with SA:</p>
+          <pre>func _ready():
+    var a_star_path = PathfindingManager.get_path(
+        global_position, forge_position
+    )
+    var sa_path = SAPathfinder.find_path(
+        a_star_path, 
+        TrapManager.get_trap_positions()
+    )
+    set_path(sa_path)</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">⚠️ Performance Warning</div>
+          <div class="warn-box">
+            <strong>SA runs 300 iterations per enemy.</strong> With 20 enemies in a wave, that's 6000 iterations per frame if you're not careful. Compute paths at wave start, not every frame. If performance dips, reduce ITERATIONS or run SA on a thread with <code>Thread.new()</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M6.4 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 6.4</div>
+      <div class="milestone-title">Heat Meter UI Visualization</div>
+      <div class="section-grid">
+        <div class="section-card full-width">
+          <div class="section-label">heat_meter.gd — Connects SA Temperature to Visual</div>
+          <pre>extends Control
+
+@onready var fill_bar: ColorRect = $FillBar
+@onready var label: Label = $TempLabel
+
+const MAX_TEMP = 100.0
+
+func _ready():
+    SAPathfinder.temperature_changed.connect(_on_temp_changed)
+
+func _on_temp_changed(new_temp: float):
+    var ratio = clamp(new_temp / MAX_TEMP, 0.0, 1.0)
+    fill_bar.size.x = ratio * 200   # 200px = full bar width
+    # Interpolate color: blue (cold) -> amber -> red (hot)
+    var cold = Color(0.13, 0.47, 0.8)
+    var hot = Color(1.0, 0.2, 0.0)
+    fill_bar.color = cold.lerp(hot, ratio)
+    label.text = "%.0f°" % new_temp</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Scene Structure</div>
+          <pre>HeatMeter.tscn (inside HUD.tscn)
+└── Control
+    ├── Label ("HEAT")
+    ├── PanelContainer (bar background)
+    │   └── FillBar (ColorRect, fills based on temp)
+    └── TempLabel (numeric value)</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Testing SA Integration</div>
+          <ul class="checklist">
+            <li>Raiders find paths at wave start</li>
+            <li>Heat meter reflects temperature changes</li>
+            <li>Placing a wall forces SA recalculation</li>
+            <li>Distraction ability spikes temperature</li>
+            <li>Raiders avoid trap-heavy routes</li>
+            <li>Game runs at 60fps with 10+ enemies</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ PHASE 7 ═══ -->
+<section class="phase phase-7" id="phase7">
+  <div class="phase-header" onclick="togglePhase(this)">
+    <div class="phase-number">VII</div>
+    <div class="phase-title-group">
+      <div class="phase-label">Phase 7</div>
+      <div class="phase-title">Polish</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+
+    <!-- M7.1 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 7.1</div>
+      <div class="milestone-title">UI — Full HUD &amp; Menus</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">UI Components to Build</div>
+          <ul>
+            <li><strong>Resource Bar</strong> — Iron / Wood / Stone with icons</li>
+            <li><strong>Forge Health Bar</strong> — prominent, always visible</li>
+            <li><strong>Wave Counter</strong> — "Wave 3 / 20"</li>
+            <li><strong>Phase Timer</strong> — countdown during build phase</li>
+            <li><strong>Heat Meter</strong> — completed in Phase 6</li>
+            <li><strong>Build Palette</strong> — shows available structures and their costs</li>
+            <li><strong>Main Menu</strong> — Start, Controls, Quit</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Godot UI Tips</div>
+          <ul>
+            <li>Use <span class="tag tag-node">Control</span> nodes with anchors (not hardcoded positions)</li>
+            <li>Always parent UI to a <span class="tag tag-node">CanvasLayer</span></li>
+            <li>Use <span class="tag tag-node">MarginContainer</span> for consistent padding</li>
+            <li>Themes: set a global Theme resource so all your UI matches</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M7.2 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 7.2</div>
+      <div class="milestone-title">Art — Sprites &amp; Animations</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Art Priority Order</div>
+          <ol>
+            <li>Player sprite (8-directional, 4 frames walk cycle)</li>
+            <li>Raider sprite (front-facing, walk + death)</li>
+            <li>Forge structure</li>
+            <li>Wall, Tower, Trap tiles</li>
+            <li>Resource nodes (iron rock, tree, stone)</li>
+            <li>Tilemap (ground, path, water, rocks)</li>
+          </ol>
+          <p style="margin-top:8px; font-size:12px; font-style:italic;">Use Kenney.nl's free packs until you have time for custom art.</p>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Godot Animation</div>
+          <p>Use <span class="tag tag-node">AnimatedSprite2D</span> — it handles sprite sheets natively. Store animation sheets in <code>assets/sprites/</code>.</p>
+          <p style="margin-top:8px;">Animations to create:</p>
+          <ul>
+            <li><code>player_walk</code>, <code>player_idle</code></li>
+            <li><code>raider_walk</code>, <code>raider_attack</code>, <code>raider_die</code></li>
+            <li><code>forge_idle</code> (smoke/fire effect)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- M7.3 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 7.3</div>
+      <div class="milestone-title">Audio</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Free Audio Resources</div>
+          <ul>
+            <li><strong>freesound.org</strong> — Free SFX under CC0</li>
+            <li><strong>opengameart.org</strong> — Music and SFX</li>
+            <li><strong>pixabay.com/music</strong> — Royalty-free tracks</li>
+          </ul>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Audio Bus Setup in Godot</div>
+          <p>Create 3 audio buses: <strong>Master</strong>, <strong>Music</strong>, <strong>SFX</strong>. This lets you independently volume-control music and SFX.</p>
+          <p style="margin-top:8px;">Use <span class="tag tag-node">AudioStreamPlayer2D</span> for positional sounds (combat), <span class="tag tag-node">AudioStreamPlayer</span> for global sounds (music, UI).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- M7.4 -->
+    <div class="milestone">
+      <div class="milestone-number">Milestone 7.4</div>
+      <div class="milestone-title">Balancing &amp; Save System</div>
+      <div class="section-grid">
+        <div class="section-card">
+          <div class="section-label">Wave Difficulty Scaling</div>
+          <pre>func get_wave_config(wave: int) -> Dictionary:
+    return {
+        "enemy_count": 3 + wave * 2,
+        "enemy_health": 50 + wave * 10,
+        "enemy_speed": 60 + wave * 3,
+        "sa_initial_temp": max(20.0, 100.0 - wave * 3.0)
+        # Lower initial temp = smarter raiders earlier
+    }</pre>
+        </div>
+        <div class="section-card">
+          <div class="section-label">Save System</div>
+          <pre>func save_game():
+    var save_data = {
+        "wave": GameLoop.wave_number,
+        "resources": GameData.resources,
+        "forge_health": Forge.current_health
+    }
+    var file = FileAccess.open(
+        "user://savegame.json", FileAccess.WRITE
+    )
+    file.store_string(JSON.stringify(save_data))
+
+func load_game():
+    var file = FileAccess.open(
+        "user://savegame.json", FileAccess.READ
+    )
+    var data = JSON.parse_string(file.get_as_text())
+    # Restore game state from data</pre>
+        </div>
+        <div class="section-card full-width">
+          <div class="section-label">Final Definition of Done — The Complete Game</div>
+          <ul class="checklist">
+            <li>All 7 phases implemented and tested</li>
+            <li>SA pathfinding active with Heat Meter</li>
+            <li>20 waves balanced and completable</li>
+            <li>Victory and Defeat screens functional</li>
+            <li>All sprites replaced (no colored squares)</li>
+            <li>Sound effects and music playing</li>
+            <li>Save/load working</li>
+            <li>No crashes during a full playthrough</li>
+            <li>GitHub repo is up to date</li>
+            <li>Demo-ready build exported</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  Forge &amp; Survive &nbsp;·&nbsp; Development Roadmap &nbsp;·&nbsp; COSC 304 – Introduction to AI &nbsp;·&nbsp; Group 9 &nbsp;·&nbsp; BSCS 3-2
+</footer>
+
+</div>
+
+<script>
+// Toggle phase bodies
+function togglePhase(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Open phase 1 by default
+document.addEventListener('DOMContentLoaded', () => {
+  const firstHeader = document.querySelector('.phase-header');
+  if (firstHeader) {
+    firstHeader.classList.add('open');
+    firstHeader.nextElementSibling.classList.add('open');
+  }
+});
+
+// Ember particle effect
+const canvas = document.getElementById('ember-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+const embers = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function Ember() {
+  this.reset = function() {
+    this.x = Math.random() * W;
+    this.y = H + 10;
+    this.size = Math.random() * 2.5 + 0.5;
+    this.speed = Math.random() * 1.2 + 0.3;
+    this.drift = (Math.random() - 0.5) * 0.6;
+    this.life = 1.0;
+    this.decay = Math.random() * 0.005 + 0.002;
+    const r = Math.floor(Math.random() * 3);
+    this.color = [
+      [255, 120, 20],
+      [255, 200, 40],
+      [255, 60, 10]
+    ][r];
+  };
+  this.reset();
+  this.y = Math.random() * H; // Start scattered
+}
+
+for (let i = 0; i < 80; i++) embers.push(new Ember());
+
+function animateEmbers() {
+  ctx.clearRect(0, 0, W, H);
+  for (const e of embers) {
+    e.y -= e.speed;
+    e.x += e.drift;
+    e.life -= e.decay;
+    if (e.life <= 0 || e.y < -10) e.reset();
+    ctx.save();
+    ctx.globalAlpha = e.life * 0.7;
+    ctx.fillStyle = `rgb(${e.color[0]},${e.color[1]},${e.color[2]})`;
+    ctx.shadowColor = `rgb(${e.color[0]},${e.color[1]},0)`;
+    ctx.shadowBlur = 4;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+  requestAnimationFrame(animateEmbers);
+}
+animateEmbers();
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      const header = target.querySelector('.phase-header');
+      if (header && !header.classList.contains('open')) {
+        header.classList.add('open');
+        header.nextElementSibling.classList.add('open');
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

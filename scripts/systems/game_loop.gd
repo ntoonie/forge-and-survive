@@ -3,7 +3,7 @@ extends Node
 enum Phase { BUILD, DEFENSE }
 
 var current_phase = Phase.BUILD
-var build_timer = 60.0
+var build_timer = 10.0
 var wave_number = 0
 var max_waves = 1
 
@@ -42,7 +42,7 @@ func _on_wave_cleared(_wave_number):
 
 func _start_build_phase():
 	current_phase = Phase.BUILD
-	build_timer = 60.0
+	build_timer = 20.0
 	print("Day! Build phase started. Timer: ", build_timer)
 	phase_changed.emit(Phase.BUILD)
 

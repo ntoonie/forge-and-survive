@@ -1,9 +1,14 @@
 [gd_scene format=3 uid="uid://d4367lark75x"]
 
+[ext_resource type="Texture2D" uid="uid://cd8lhomfw07u5" path="res://assets/sprites/resources/resources.png" id="1_res"]
 [ext_resource type="Script" uid="uid://sp4taj8w8taq" path="res://scenes/world/resource_node.gd" id="1_ucyr5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_60c2p"]
 radius = 24.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wood"]
+atlas = ExtResource("1_res")
+region = Rect2(5, 28, 29, 27)
 
 [node name="ResourceNode" type="Area2D" unique_id=2006602861]
 script = ExtResource("1_ucyr5")
@@ -12,17 +17,14 @@ resource_type = "wood"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=801198015]
 shape = SubResource("CircleShape2D_60c2p")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=416321885]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.52562475, 0.38377562, 0.14198154, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=416321885]
+texture_filter = 1
+scale = Vector2(2.0, 2.0)
+texture = SubResource("AtlasTexture_wood")
 
 [node name="Label" type="Label" parent="." unique_id=1663843118]
 offset_left = -16.0
-offset_top = -40.0
+offset_top = -48.0
 offset_right = 24.0
-offset_bottom = -17.0
-text = "Wood
-"
+offset_bottom = -25.0
+text = "Wood"
