@@ -29,3 +29,12 @@ text = "Wood: 0"
 [node name="StoneLabel" type="Label" parent="Control/ResourcePanel" unique_id=1365315056]
 layout_mode = 2
 text = "Stone: 0"
+
+[node name="TimerLabel" type="Label" parent="Control/ResourcePanel" unique_id=1244699916]
+layout_mode = 2
+text = "Day: 60s"
+
+[node name="WaveLabel" type="Label" parent="Control/ResourcePanel" unique_id=1180283638]
+layout_mode = 2
+text = "Wave: 1/20
+"

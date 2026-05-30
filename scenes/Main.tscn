@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bvn51dsg2vhpy" path="res://scenes/Enemy/enemy.tscn" id="3_0bbpv"]
 [ext_resource type="PackedScene" uid="uid://4g4ebq4fo860" path="res://scenes/Enemy/marker_2d.tscn" id="4_vcsgt"]
 [ext_resource type="Script" uid="uid://c5p402jpsethj" path="res://scenes/Enemy/Wave_manager.gd" id="5_c01mt"]
+[ext_resource type="Script" uid="uid://cd0u1rr7pa4tq" path="res://scripts/systems/game_loop.gd" id="6_c01mt"]
+[ext_resource type="Script" uid="uid://lsnhucc13mwt" path="res://scripts/systems/resource_spawner.gd" id="7_nxtc6"]
 
 [node name="Main" type="Node2D" unique_id=1632719062]
 
@@ -30,7 +32,13 @@ position = Vector2(408, 337)
 [node name="Spanwpointdown" parent="Raider" unique_id=1311737040 instance=ExtResource("4_vcsgt")]
 position = Vector2(426, 616)
 
-[node name="WaveManager" type="Node2D" parent="Raider" unique_id=1162501978 node_paths=PackedStringArray("spawn_points")]
+[node name="WaveManager" type="Node2D" parent="Raider" unique_id=1162501978 node_paths=PackedStringArray("spawn_points") groups=["wave_manager"]]
 script = ExtResource("5_c01mt")
 enemy_scene = ExtResource("3_0bbpv")
 spawn_points = [NodePath("../Spanwpointleft"), NodePath("../Spanwpointright"), NodePath("../Spanwpointup"), NodePath("../Spanwpointdown")]
+
+[node name="GameLoop" type="Node" parent="." unique_id=473379619 groups=["game_loop"]]
+script = ExtResource("6_c01mt")
+
+[node name="ResourceSpawner" type="Node" parent="." unique_id=1901407918]
+script = ExtResource("7_nxtc6")

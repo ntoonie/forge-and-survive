@@ -2,11 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://dkflca248w3rw" path="res://assets/sprites/tiles.png" id="1_kqs1s"]
 [ext_resource type="PackedScene" uid="uid://jspjunrmfnlq" path="res://scenes/player/player.tscn" id="2_1oml7"]
-[ext_resource type="PackedScene" uid="uid://6t4hbnge0ph3" path="res://scenes/world/ironnode.tscn" id="3_qxiha"]
-[ext_resource type="PackedScene" uid="uid://d4367lark75x" path="res://scenes/world/woodnode.tscn" id="4_i1jm3"]
-[ext_resource type="PackedScene" uid="uid://bl2l2wovcyg7s" path="res://scenes/world/stonenode.tscn" id="5_252at"]
 [ext_resource type="Script" uid="uid://cxex0x83pfupl" path="res://scripts/systems/build_system.gd" id="6_i1jm3"]
 [ext_resource type="PackedScene" uid="uid://dovvacmb47kxf" path="res://scenes/structures/forge.tscn" id="7_252at"]
+[ext_resource type="Script" uid="uid://dqxntd8jfo6cv" path="res://scripts/systems/day_night_overlay.gd" id="8_qh0kd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_32lhk"]
 texture = ExtResource("1_kqs1s")
@@ -327,17 +325,17 @@ tile_set = SubResource("TileSet_7g83o")
 [node name="Player" parent="." unique_id=909018891 groups=["player"] instance=ExtResource("2_1oml7")]
 position = Vector2(23, 31)
 
-[node name="ResourceNode" parent="." unique_id=2006602861 instance=ExtResource("3_qxiha")]
-position = Vector2(319, 142)
-
-[node name="ResourceNode2" parent="." unique_id=1375662529 instance=ExtResource("4_i1jm3")]
-position = Vector2(851, 156)
-
-[node name="ResourceNode3" parent="." unique_id=1908882139 instance=ExtResource("5_252at")]
-position = Vector2(192, 502)
-
 [node name="BuildSystem" type="Node" parent="." unique_id=1886626186]
 script = ExtResource("6_i1jm3")
 
 [node name="Forge" parent="." unique_id=1444986659 instance=ExtResource("7_252at")]
 position = Vector2(544, 288)
+
+[node name="DayNightOverlay" type="CanvasLayer" parent="." unique_id=1837764449]
+script = ExtResource("8_qh0kd")
+
+[node name="NightOverlay" type="ColorRect" parent="DayNightOverlay" unique_id=901813500]
+visible = false
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.050980393, 0.050980393, 0.2, 0.4)

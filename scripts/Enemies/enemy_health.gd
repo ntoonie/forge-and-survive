@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 10.0
+var SPEED = 60.0
 const FORGE_POSITION = Vector2(544, 288)
 
 @export var max_health: int = 30
@@ -18,16 +18,19 @@ func _ready():
 	path_index = 0
 	print("Path length: ", path.size())
 
+func apply_wave_config(config: Dictionary):
+	max_health = config["enemy_health"]
+	current_health = max_health
+	SPEED = config["enemy_speed"]
+
 func _physics_process(_delta):
 	if path_index >= path.size():
 		_attack_forge()
 		return
-
 	var target = path[path_index]
 	var direction = (target - global_position).normalized()
 	velocity = direction * SPEED
 	move_and_slide()
-
 	if global_position.distance_to(target) < 16.0:
 		path_index += 1
 

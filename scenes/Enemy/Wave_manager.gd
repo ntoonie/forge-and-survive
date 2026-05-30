@@ -12,7 +12,7 @@ var is_spawning: bool = false
 
 
 func _ready() -> void:
-	start_wave(1)  # temporary — game_loop.gd will call this later
+	pass  # temporary — game_loop.gd will call this later
 
 
 func start_wave(wave_number: int) -> void:

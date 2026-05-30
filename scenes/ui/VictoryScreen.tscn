@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cklflkkavfwlb"]
+
+[ext_resource type="Script" uid="uid://cljy4u0s2xjj3" path="res://scripts/ui/victory_screen.gd" id="1_kruri"]
+
+[node name="Control" type="Control" unique_id=2082846026]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kruri")
+
+[node name="Label" type="Label" parent="." unique_id=283254872]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "YOU SURVIVED!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1671181606]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Play Again"
