@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://btdwy1eegyxdn"]
+
+[ext_resource type="Script" uid="uid://c1xol41wj6ijm" path="res://scripts/systems/structure_health.gd" id="1_1jefv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7hj8w"]
+size = Vector2(32, 32)
+
+[node name="Wall" type="StaticBody2D" unique_id=570464650]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1384263737]
+shape = SubResource("RectangleShape2D_7hj8w")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=959442653]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.29715294, 0.25693426, 0.19425482, 1)
+
+[node name="HealthComponent" type="Node" parent="." unique_id=438030771]
+script = ExtResource("1_1jefv")
