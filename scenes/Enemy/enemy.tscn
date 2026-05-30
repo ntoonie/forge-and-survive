@@ -34,7 +34,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Enemy" type="RigidBody2D" unique_id=1924542643]
+[node name="Enemy" type="CharacterBody2D" unique_id=273230036]
 script = ExtResource("1_84vye")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1721862458]

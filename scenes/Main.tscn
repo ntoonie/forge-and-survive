@@ -12,7 +12,6 @@
 position = Vector2(-20, 118)
 
 [node name="Hud" parent="." unique_id=86831255 instance=ExtResource("2_0bbpv")]
-position = Vector2(-4, 2)
 
 [node name="Raider" type="Node2D" parent="." unique_id=1812823829]
 position = Vector2(112, -58)
@@ -20,16 +19,16 @@ position = Vector2(112, -58)
 [node name="Marker2D" parent="Raider" unique_id=1372347747 instance=ExtResource("4_vcsgt")]
 
 [node name="Spanwpointleft" parent="Raider" unique_id=470633463 instance=ExtResource("4_vcsgt")]
-position = Vector2(-86, 461)
+position = Vector2(32, 304)
 
 [node name="Spanwpointright" parent="Raider" unique_id=2018318554 instance=ExtResource("4_vcsgt")]
-position = Vector2(961, 514)
+position = Vector2(1088, 304)
 
 [node name="Spanwpointup" parent="Raider" unique_id=1487745946 instance=ExtResource("4_vcsgt")]
-position = Vector2(421, 212)
+position = Vector2(560, 32)
 
 [node name="Spanwpointdown" parent="Raider" unique_id=1311737040 instance=ExtResource("4_vcsgt")]
-position = Vector2(476, 753)
+position = Vector2(560, 576)
 
 [node name="WaveManager" type="Node2D" parent="Raider" unique_id=1162501978 node_paths=PackedStringArray("spawn_points")]
 script = ExtResource("5_c01mt")
