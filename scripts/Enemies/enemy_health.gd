@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 60.0
+const SPEED = 10.0
 const FORGE_POSITION = Vector2(544, 288)
 
 @export var max_health: int = 30
@@ -13,6 +13,7 @@ signal died
 
 func _ready():
 	current_health = max_health
+	add_to_group("enemy")
 	path = SAPathfinder.find_path(global_position, FORGE_POSITION)
 	path_index = 0
 	print("Path length: ", path.size())
