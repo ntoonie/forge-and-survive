@@ -19,16 +19,16 @@ position = Vector2(112, -58)
 [node name="Marker2D" parent="Raider" unique_id=1372347747 instance=ExtResource("4_vcsgt")]
 
 [node name="Spanwpointleft" parent="Raider" unique_id=470633463 instance=ExtResource("4_vcsgt")]
-position = Vector2(32, 304)
+position = Vector2(45, 466)
 
 [node name="Spanwpointright" parent="Raider" unique_id=2018318554 instance=ExtResource("4_vcsgt")]
-position = Vector2(1088, 304)
+position = Vector2(740, 505)
 
 [node name="Spanwpointup" parent="Raider" unique_id=1487745946 instance=ExtResource("4_vcsgt")]
-position = Vector2(560, 32)
+position = Vector2(408, 337)
 
 [node name="Spanwpointdown" parent="Raider" unique_id=1311737040 instance=ExtResource("4_vcsgt")]
-position = Vector2(560, 576)
+position = Vector2(426, 616)
 
 [node name="WaveManager" type="Node2D" parent="Raider" unique_id=1162501978 node_paths=PackedStringArray("spawn_points")]
 script = ExtResource("5_c01mt")
