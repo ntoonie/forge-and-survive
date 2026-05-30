@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Forge&Survive"
+run/main_scene="uid://bjx5bix4xbv1s"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
