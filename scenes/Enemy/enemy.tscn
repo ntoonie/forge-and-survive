@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://bvn51dsg2vhpy"]
+
+[ext_resource type="Texture2D" uid="uid://5g028mr8hxl5" path="res://assets/sprites/711654445_1015358200840850_8115414767051517766_n.png" id="1_7p1mj"]
+[ext_resource type="Script" uid="uid://bag2seulvb5k6" path="res://scripts/Enemies/enemy_health.gd" id="1_84vye"]
+[ext_resource type="Script" uid="uid://xpn1plfkm1ue" path="res://scripts/Enemies/Raiderbody.gd" id="2_vamnb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_md0e3"]
+size = Vector2(20, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ra3w"]
+atlas = ExtResource("1_7p1mj")
+region = Rect2(0, 0, 345, 330)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5uy6h"]
+atlas = ExtResource("1_7p1mj")
+region = Rect2(345, 0, 345, 330)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c4w8v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ra3w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5uy6h")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="Enemy" type="RigidBody2D" unique_id=1924542643]
+script = ExtResource("1_84vye")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1721862458]
+position = Vector2(-0.37499237, -5)
+shape = SubResource("RectangleShape2D_md0e3")
+script = ExtResource("2_vamnb")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=878813623]
+texture_filter = 1
+position = Vector2(4.8125, -6.125)
+scale = Vector2(0.10905798, 0.12045449)
+sprite_frames = SubResource("SpriteFrames_c4w8v")
+autoplay = "default"
+frame = 1
+frame_progress = 0.5590411
