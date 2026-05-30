@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b6nrij7hq7nje"]
+
+[ext_resource type="Script" uid="uid://dssxyjo4yth7h" path="res://scripts/ui/defeat_screen.gd" id="1_vyvod"]
+
+[node name="DefeatScreen" type="Control" unique_id=72467023]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vyvod")
+
+[node name="Label" type="Label" parent="." unique_id=1909801191]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "THE FORGE HAS FALLEN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1768712251]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Try Again"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

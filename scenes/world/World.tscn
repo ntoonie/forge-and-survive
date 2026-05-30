@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://d4367lark75x" path="res://scenes/world/woodnode.tscn" id="4_i1jm3"]
 [ext_resource type="PackedScene" uid="uid://bl2l2wovcyg7s" path="res://scenes/world/stonenode.tscn" id="5_252at"]
 [ext_resource type="Script" uid="uid://cxex0x83pfupl" path="res://scripts/systems/build_system.gd" id="6_i1jm3"]
+[ext_resource type="PackedScene" uid="uid://dovvacmb47kxf" path="res://scenes/structures/forge.tscn" id="7_252at"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_32lhk"]
 texture = ExtResource("1_kqs1s")
@@ -336,3 +337,6 @@ position = Vector2(192, 502)
 
 [node name="BuildSystem" type="Node" parent="." unique_id=1886626186]
 script = ExtResource("6_i1jm3")
+
+[node name="Forge" parent="." unique_id=1444986659 instance=ExtResource("7_252at")]
+position = Vector2(544, 288)

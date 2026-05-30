@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameData="*uid://16fpn78veaxe"
+SAPathfinder="*uid://clc46e0ce52v6"
 
 [input]
 

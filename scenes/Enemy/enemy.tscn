@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" uid="uid://5g028mr8hxl5" path="res://assets/sprites/711654445_1015358200840850_8115414767051517766_n.png" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://bag2seulvb5k6" path="res://scripts/Enemies/enemy_health.gd" id="1_84vye"]
-[ext_resource type="Script" uid="uid://xpn1plfkm1ue" path="res://scripts/Enemies/Raiderbody.gd" id="2_vamnb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md0e3"]
 size = Vector2(20, 25)
@@ -40,7 +39,6 @@ script = ExtResource("1_84vye")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1721862458]
 position = Vector2(-0.37499237, -5)
 shape = SubResource("RectangleShape2D_md0e3")
-script = ExtResource("2_vamnb")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=878813623]
 texture_filter = 1
