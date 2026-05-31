@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ldrg8tvvirgn"
-path="res://.godot/imported/enemy_1.png-9328b3bbea354bc4849666e7edd4f7b9.ctex"
+uid="uid://b76cs6uwt6174"
+path="res://.godot/imported/enemy_boss.png-2bd2a90d7b2c18f45ba9734c94631fd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/enemy_1.png"
-dest_files=["res://.godot/imported/enemy_1.png-9328b3bbea354bc4849666e7edd4f7b9.ctex"]
+source_file="res://assets/sprites/enemies/enemy_boss.png"
+dest_files=["res://.godot/imported/enemy_boss.png-2bd2a90d7b2c18f45ba9734c94631fd4.ctex"]
 
 [params]
 

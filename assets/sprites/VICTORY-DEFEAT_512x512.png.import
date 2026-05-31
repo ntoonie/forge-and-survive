@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ldrg8tvvirgn"
-path="res://.godot/imported/enemy_1.png-9328b3bbea354bc4849666e7edd4f7b9.ctex"
+uid="uid://d1yrq03lmbm7p"
+path="res://.godot/imported/VICTORY-DEFEAT_512x512.png-5fe8724c34f884205ee63aaf59826d2f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/enemy_1.png"
-dest_files=["res://.godot/imported/enemy_1.png-9328b3bbea354bc4849666e7edd4f7b9.ctex"]
+source_file="res://assets/sprites/VICTORY-DEFEAT_512x512.png"
+dest_files=["res://.godot/imported/VICTORY-DEFEAT_512x512.png-5fe8724c34f884205ee63aaf59826d2f.ctex"]
 
 [params]
 
