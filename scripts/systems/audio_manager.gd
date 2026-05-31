@@ -18,7 +18,17 @@ func play_day():
 func play_night():
 	music_player.stream = load("res://assets/audio/night.ogg")
 	music_player.play()
-
+	
+func play_victory():
+	music_player.stop()
+	music_player.stream = load("res://assets/audio/victory_sfx.mp3")
+	music_player.play()
+	
+func play_defeat():
+	music_player.stop()
+	music_player.stream = load("res://assets/audio/defeat_sfx.mp3")
+	music_player.play()
+	
 func stop():
 	music_player.stop()
 
