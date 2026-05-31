@@ -5,7 +5,7 @@ enum Phase { BUILD, DEFENSE }
 var current_phase = Phase.BUILD
 var build_timer = 10.0
 var wave_number = 0
-var max_waves = 3
+var max_waves = 5
 
 signal phase_changed(new_phase)
 signal game_won

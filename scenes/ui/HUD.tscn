@@ -36,5 +36,5 @@ text = "Day: 60s"
 
 [node name="WaveLabel" type="Label" parent="Control/ResourcePanel" unique_id=1180283638]
 layout_mode = 2
-text = "Wave: 1/20
+text = "Wave: 1/5
 "

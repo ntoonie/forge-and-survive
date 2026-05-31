@@ -32,10 +32,10 @@ func start_wave(wave_number: int) -> void:
 
 func _get_wave_config(wave: int) -> Dictionary:
 	return {
-		"enemy_count":     3 + wave * 2,
-		"enemy_health":    50 + wave * 10,
-		"enemy_speed":     60.0 + wave * 3.0,
-		"sa_initial_temp": max(20.0, 100.0 - wave * 3.0),
+		"enemy_count":     2 + wave * 3,
+		"enemy_health":    30 + wave * 20,
+		"enemy_speed":     60.0 + wave * 5.0,
+		"sa_initial_temp": max(20.0, 100.0 - wave * 15.0),
 	}
 
 

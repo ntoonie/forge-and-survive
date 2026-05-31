@@ -6,12 +6,10 @@ const MAP_MAX_X = 33
 const MAP_MIN_Y = 2
 const MAP_MAX_Y = 17
 
-# How many of each resource to spawn
 const IRON_COUNT = 3
 const WOOD_COUNT = 3
 const STONE_COUNT = 3
 
-# Forge center — avoid spawning too close
 const FORGE_TILE = Vector2i(17, 9)
 const MIN_DISTANCE_FROM_FORGE = 5
 
@@ -20,14 +18,31 @@ var wood_scene = preload("res://scenes/world/woodnode.tscn")
 var stone_scene = preload("res://scenes/world/stonenode.tscn")
 
 var used_positions: Array = []
+var spawned_nodes: Array = []
 
 func _ready():
-	print("ResourceSpawner started!")
+	# Listen for day phase
+	var game_loop = get_tree().get_first_node_in_group("game_loop")
+	if game_loop:
+		game_loop.phase_changed.connect(_on_phase_changed)
 	_spawn_resources()
-	print("Resources spawned: ", used_positions.size())
+
+func _on_phase_changed(new_phase):
+	if new_phase == 0:  # Day phase started
+		_respawn_resources()
+
+func _respawn_resources():
+	# Clear any remaining resource nodes
+	for node in spawned_nodes:
+		if is_instance_valid(node):
+			node.queue_free()
+	spawned_nodes.clear()
+	used_positions.clear()
+	# Spawn fresh resources
+	_spawn_resources()
+	print("Resources respawned for new day!")
 
 func _spawn_resources():
-	# Spawn each resource type
 	for i in IRON_COUNT:
 		_spawn_resource(iron_scene)
 	for i in WOOD_COUNT:
@@ -45,14 +60,11 @@ func _spawn_resource(scene: PackedScene):
 		pos.x * TILE_SIZE + TILE_SIZE / 2,
 		pos.y * TILE_SIZE + TILE_SIZE / 2
 	)
-	print("Spawning resource at: ", world_pos)
 	node.global_position = world_pos
-	
 	var world = get_tree().current_scene.find_child("World")
 	if world:
 		world.add_child(node)
-	else:
-		print("World node not found!")
+		spawned_nodes.append(node)
 	used_positions.append(pos)
 
 func _get_random_position() -> Vector2i:
@@ -61,18 +73,12 @@ func _get_random_position() -> Vector2i:
 		var x = randi_range(MAP_MIN_X, MAP_MAX_X)
 		var y = randi_range(MAP_MIN_Y, MAP_MAX_Y)
 		var candidate = Vector2i(x, y)
-
-		# Check not too close to forge
 		var dist_to_forge = abs(x - FORGE_TILE.x) + abs(y - FORGE_TILE.y)
 		if dist_to_forge < MIN_DISTANCE_FROM_FORGE:
 			attempts += 1
 			continue
-
-		# Check not overlapping existing resource
 		if candidate in used_positions:
 			attempts += 1
 			continue
-
 		return candidate
-		attempts += 1
-	return Vector2i(-1, -1)  # Failed to find position
+	return Vector2i(-1, -1)
