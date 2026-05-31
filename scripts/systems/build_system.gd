@@ -3,13 +3,15 @@ extends Node
 const TILE_SIZE = 32
 const COSTS = {
 	"wall": {"stone": 1},
-	"tower": {"wood": 1, "iron": 1}
+	"tower": {"wood": 1, "iron": 1},
+	"floor_spikes": {"wood": 1, "stone": 1}
 }
 
 var selected_structure = "wall"
 var build_mode = false
 var wall_scene = preload("res://scenes/structures/wall.tscn")
 var tower_scene = preload("res://scenes/structures/tower.tscn")
+var floor_spikes_scene = preload("res://scenes/structures/floor_spikes.tscn")
 var ghost: ColorRect
 
 func _ready():
@@ -35,6 +37,11 @@ func _process(_delta):
 		ghost.color = Color(0.5, 0.5, 1.0, 0.5)
 		print("Selected: Wall")
 
+	if Input.is_action_just_pressed("select_spikes"):
+		selected_structure = "floor_spikes"
+		ghost.color = Color(1.0, 0.4, 0.1, 0.5)
+		print("Selected: Floor Spike")
+
 	if build_mode:
 		_update_ghost()
 		if Input.is_action_just_pressed("place"):
@@ -59,8 +66,10 @@ func _place_structure():
 	var structure
 	if selected_structure == "wall":
 		structure = wall_scene.instantiate()
-	else:
+	elif selected_structure == "tower":
 		structure = tower_scene.instantiate()
+	else:
+		structure = floor_spikes_scene.instantiate()
 	structure.global_position = ghost.global_position + Vector2(TILE_SIZE / 2, TILE_SIZE / 2)
 	get_tree().current_scene.add_child(structure)
 	_deduct_cost()

@@ -7,8 +7,8 @@ const SPEED = 150.0
 
 func _physics_process(_delta):
 	var direction = Vector2.ZERO
-	direction.x = Input.get_axis("ui_left", "ui_right")
-	direction.y = Input.get_axis("ui_up", "ui_down")
+	direction.x = Input.get_axis("move_left", "move_right")
+	direction.y = Input.get_axis("move_up", "move_down")
 
 	if direction != Vector2.ZERO:
 		direction = direction.normalized()
