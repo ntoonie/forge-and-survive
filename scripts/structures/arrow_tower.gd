@@ -4,6 +4,8 @@ extends StaticBody2D
 @export var damage: int = 10
 @export var attack_range: float = 150.0
 
+const ProjectileScene = preload("res://scenes/structures/arrow_projectile.tscn")
+
 var current_health: int
 var enemies_in_range: Array = []
 
@@ -33,8 +35,8 @@ func _shoot():
 		return
 	# Attack first enemy in range
 	var target = enemies_in_range[0]
-	target.take_damage(damage)
-	print("Tower shot enemy! Enemy health: ", target.current_health)
+	_spawn_projectile(target)
+	print("Tower fired projectile at enemy!")
 
 	# Decrement shot durability
 	shots_remaining -= 1
@@ -42,6 +44,20 @@ func _shoot():
 		print("Tower worn out after firing too many shots!")
 		SAPathfinder.remove_wall(global_position)
 		queue_free()
+
+func _spawn_projectile(target: Node) -> void:
+	if not is_instance_valid(target):
+		return
+
+	var projectile = ProjectileScene.instantiate()
+	projectile.global_position = global_position + Vector2(0, -12)
+	projectile.setup(target, damage)
+
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		current_scene.add_child(projectile)
+	else:
+		get_parent().add_child(projectile)
 
 func take_damage(amount: int):
 	current_health -= amount

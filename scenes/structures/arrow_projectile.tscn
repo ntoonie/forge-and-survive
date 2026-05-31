@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bsux6jotlvvue"]
+
+[ext_resource type="Script" path="res://scripts/structures/arrow_projectile.gd" id="1_projectile"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_projectile"]
+radius = 3.0
+
+[node name="ArrowProjectile" type="Area2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_projectile")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_projectile")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-6, -1, 2, -1, 2, -4, 8, 0, 2, 4, 2, 1, -6, 1)
