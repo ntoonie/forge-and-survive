@@ -11,7 +11,7 @@
 [node name="Main" type="Node2D" unique_id=1632719062]
 
 [node name="World" parent="." unique_id=1348018387 instance=ExtResource("1_rvslj")]
-position = Vector2(-19, 120)
+position = Vector2(-19, 118)
 
 [node name="Hud" parent="." unique_id=86831255 instance=ExtResource("2_0bbpv")]
 
