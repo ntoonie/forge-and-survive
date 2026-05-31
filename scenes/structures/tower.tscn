@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://tower_struct01"]
+
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="1_struct"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tower"]
+atlas = ExtResource("1_struct")
+region = Rect2(12, 57, 34, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tower"]
+size = Vector2(32, 48)
+
+[node name="Tower" type="StaticBody2D" unique_id=2001000001]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2001000002]
+shape = SubResource("RectangleShape2D_tower")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2001000003]
+texture = SubResource("AtlasTexture_tower")

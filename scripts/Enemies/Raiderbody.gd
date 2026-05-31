@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 const SPEED = 60.0
-const FORGE_POSITION = Vector2(544, 288)
+const FORGE_POSITION = Vector2(576.0, 320.0)
 
 var path: PackedVector2Array = []
 var path_index: int = 0

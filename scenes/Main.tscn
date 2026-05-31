@@ -20,13 +20,13 @@ position = Vector2(-20, 118)
 [node name="Marker2D" parent="Raider" unique_id=1372347747 instance=ExtResource("4_vcsgt")]
 
 [node name="Spanwpointleft" parent="Raider" unique_id=470633463 instance=ExtResource("4_vcsgt")]
-position = Vector2(-10, 406)
+position = Vector2(-80, 406)
 
 [node name="Spanwpointright" parent="Raider" unique_id=2018318554 instance=ExtResource("4_vcsgt")]
 position = Vector2(1090, 406)
 
 [node name="Spanwpointup" parent="Raider" unique_id=1487745946 instance=ExtResource("4_vcsgt")]
-position = Vector2(524, 128)
+position = Vector2(526, 130)
 
 [node name="Spanwpointdown" parent="Raider" unique_id=1311737040 instance=ExtResource("4_vcsgt")]
 position = Vector2(524, 716)

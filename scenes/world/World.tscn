@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://dqxntd8jfo6cv" path="res://scripts/systems/day_night_overlay.gd" id="8_qh0kd"]
 [ext_resource type="Texture2D" uid="uid://cd8lhomfw07u5" path="res://assets/sprites/resources/resources.png" id="9_yr1n6"]
 [ext_resource type="Texture2D" uid="uid://ldrg8tvvirgn" path="res://assets/sprites/enemy_1.png" id="10_l5ull"]
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="11_16fjv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_32lhk"]
 texture = ExtResource("1_kqs1s")
@@ -373,10 +374,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_l5ull"]
-atlas = ExtResource("9_yr1n6")
-region = Rect2(0, 0, 127.600006, 126.799995)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_16fjv"]
 atlas = ExtResource("10_l5ull")
 region = Rect2(5, 3, 19, 20)
@@ -421,6 +418,10 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i08rc"]
 size = Vector2(17.98005, 16.982544)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_l5ull"]
+atlas = ExtResource("9_yr1n6")
+region = Rect2(0, 0, 127.600006, 126.799995)
+
 [node name="World" type="Node2D" unique_id=1348018387]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1982336431]
@@ -438,11 +439,27 @@ sprite_frames = SubResource("SpriteFrames_0duuj")
 animation = &"running"
 frame_progress = 0.67894125
 
+[node name="Enemy" type="CharacterBody2D" parent="." unique_id=1351825780]
+visible = false
+position = Vector2(14, -67)
+scale = Vector2(2.005, 2.005)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Enemy" unique_id=1664193021]
+visible = false
+position = Vector2(49.875313, 18.952618)
+scale = Vector2(1.45, 1.45)
+sprite_frames = SubResource("SpriteFrames_8xm5o")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=1698632509]
+position = Vector2(50.37406, 21.446383)
+shape = SubResource("RectangleShape2D_i08rc")
+
 [node name="BuildSystem" type="Node" parent="." unique_id=1886626186]
 script = ExtResource("6_i1jm3")
 
 [node name="Forge" parent="." unique_id=1444986659 instance=ExtResource("7_252at")]
-position = Vector2(599, 347)
+position = Vector2(600, 330)
 
 [node name="DayNightOverlay" type="CanvasLayer" parent="." unique_id=1837764449]
 script = ExtResource("8_qh0kd")
@@ -458,16 +475,8 @@ visible = false
 position = Vector2(225, 48)
 texture = SubResource("AtlasTexture_l5ull")
 
-[node name="Enemy" type="CharacterBody2D" parent="." unique_id=1351825780]
+[node name="StructureSprite" type="Sprite2D" parent="." unique_id=2125282689]
 visible = false
-scale = Vector2(2.005, 2.005)
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Enemy" unique_id=1664193021]
-position = Vector2(49.875313, 18.952618)
-scale = Vector2(1.45, 1.45)
-sprite_frames = SubResource("SpriteFrames_8xm5o")
-animation = &"idle"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=1698632509]
-position = Vector2(50.37406, 21.446383)
-shape = SubResource("RectangleShape2D_i08rc")
+position = Vector2(650, 474.00003)
+scale = Vector2(1.255, 1.255)
+texture = ExtResource("11_16fjv")

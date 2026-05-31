@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://spikes_struct01"]
+
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="1_struct"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_spikes"]
+atlas = ExtResource("1_struct")
+region = Rect2(68, 84, 41, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spikes"]
+size = Vector2(41, 14)
+
+[node name="FloorSpikes" type="StaticBody2D" unique_id=2002000001]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2002000002]
+shape = SubResource("RectangleShape2D_spikes")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2002000003]
+texture = SubResource("AtlasTexture_spikes")

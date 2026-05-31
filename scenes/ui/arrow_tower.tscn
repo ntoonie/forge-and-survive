@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://c0klmy65t3fuo"]
 
 [ext_resource type="Script" uid="uid://db8tcba1wjaam" path="res://scripts/structures/arrow_tower.gd" id="1_7sccj"]
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="2_struct"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tower"]
+atlas = ExtResource("2_struct")
+region = Rect2(12, 57, 34, 40)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ln5pn"]
 size = Vector2(32, 32)
@@ -14,19 +19,8 @@ script = ExtResource("1_7sccj")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=405817220]
 shape = SubResource("RectangleShape2D_ln5pn")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=189197178]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.23213837, 0.25448242, 1, 1)
-
-[node name="Label" type="Label" parent="." unique_id=633205080]
-offset_left = -5.0
-offset_top = -20.0
-offset_right = 43.0
-offset_bottom = 3.0
-text = "Tower"
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=189197178]
+texture = SubResource("AtlasTexture_tower")
 
 [node name="DetectionRange" type="Area2D" parent="." unique_id=2114226371]
 

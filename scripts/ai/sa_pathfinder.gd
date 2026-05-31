@@ -7,6 +7,8 @@ const ITERATIONS   = 300
 const TILE_SIZE    = 32
 const GRID_W       = 35
 const GRID_H       = 19
+# Must match the TileMapLayer's position in World.tscn
+const TILEMAP_OFFSET = Vector2(9, 4)
 
 # ── COSTS ────────────────────────────────────────────
 const WALL_COST  = 1000.0
@@ -113,11 +115,14 @@ func _get_neighbors(cell: Vector2i) -> Array:
 
 # ── HELPERS ──────────────────────────────────────────
 func _world_to_cell(world: Vector2) -> Vector2i:
-	return Vector2i(int(world.x / TILE_SIZE), int(world.y / TILE_SIZE))
+	var local = world - TILEMAP_OFFSET
+	return Vector2i(int(local.x / TILE_SIZE), int(local.y / TILE_SIZE))
 
 func _cell_to_world(cell: Vector2i) -> Vector2:
-	return Vector2(cell.x * TILE_SIZE + TILE_SIZE / 2,
-				   cell.y * TILE_SIZE + TILE_SIZE / 2)
+	return Vector2(
+		TILEMAP_OFFSET.x + cell.x * TILE_SIZE + TILE_SIZE / 2,
+		TILEMAP_OFFSET.y + cell.y * TILE_SIZE + TILE_SIZE / 2
+	)
 
 # ── UPDATE WALLS/TRAPS ───────────────────────────────
 func add_wall(world_pos: Vector2):

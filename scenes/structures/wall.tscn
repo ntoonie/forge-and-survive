@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://btdwy1eegyxdn"]
 
 [ext_resource type="Script" uid="uid://c1xol41wj6ijm" path="res://scripts/systems/structure_health.gd" id="1_1jefv"]
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="2_struct"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wall"]
+atlas = ExtResource("2_struct")
+region = Rect2(61, 25, 52, 21)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7hj8w"]
 size = Vector2(32, 32)
@@ -10,10 +15,8 @@ size = Vector2(32, 32)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1384263737]
 shape = SubResource("RectangleShape2D_7hj8w")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=959442653]
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.29715294, 0.25693426, 0.19425482, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=959442653]
+texture = SubResource("AtlasTexture_wall")
 
 [node name="HealthComponent" type="Node" parent="." unique_id=438030771]
 script = ExtResource("1_1jefv")

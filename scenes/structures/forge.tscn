@@ -1,9 +1,14 @@
 [gd_scene format=3 uid="uid://dovvacmb47kxf"]
 
 [ext_resource type="Script" uid="uid://ctol3dir2hu3p" path="res://scripts/systems/forge.gd" id="1_jvn1s"]
+[ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="2_struct"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_forge"]
+atlas = ExtResource("2_struct")
+region = Rect2(5, 8, 49, 39)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gr7ai"]
-size = Vector2(16, 16)
+size = Vector2(32, 32)
 
 [node name="Forge" type="StaticBody2D" unique_id=1444986659]
 script = ExtResource("1_jvn1s")
@@ -11,12 +16,10 @@ script = ExtResource("1_jvn1s")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1118413374]
 shape = SubResource("RectangleShape2D_gr7ai")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1871089187]
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 32.0
-offset_bottom = 32.0
-color = Color(0.9416057, 0.5090823, 5.7756904e-07, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1871089187]
+position = Vector2(-8, -20)
+scale = Vector2(2.4, 2.4)
+texture = SubResource("AtlasTexture_forge")
 
 [node name="Label" type="Label" parent="." unique_id=592456089]
 offset_left = -20.0

@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
 var SPEED = 80.0
-const FORGE_POSITION = Vector2(544, 288)
-const ATTACK_RANGE   = 40.0
+const FORGE_POSITION = Vector2(576, 320) # Aligned center of the Forge
+const ATTACK_RANGE   = 8.0               # Distance from the edge of the forge hitbox
 
 @export var max_health: int = 30
 var current_health: int
@@ -11,89 +11,58 @@ signal died
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
-# ── State machine ─────────────────────────────────────────
-enum State { SEEK, AVOID }
-var _state := State.SEEK
-
-# AVOID state
-var _avoid_dir:   Vector2 = Vector2.ZERO
-var _avoid_timer: float   = 0.0
-const AVOID_DURATION = 1.0   # seconds to go perpendicular before retrying
-
-# Stuck detection — compare position every interval
-var _last_pos:         Vector2 = Vector2.ZERO
-var _stuck_poll_timer: float   = 0.0
-const POLL_INTERVAL  = 0.12   # how often to sample position
-const STUCK_MIN_DIST = 3.0    # must move at least this many px per interval
-
 func _ready():
 	current_health = max_health
 	add_to_group("enemy")
-	_last_pos = global_position
 
 func apply_wave_config(config: Dictionary):
 	max_health = config["enemy_health"]
 	current_health = max_health
 	SPEED = config["enemy_speed"]
 
-func _physics_process(delta):
-	var forge     = get_tree().get_first_node_in_group("forge")
+func _physics_process(_delta: float) -> void:
+	var forge = get_tree().get_first_node_in_group("forge")
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
 
-	if global_position.distance_to(forge_pos) <= ATTACK_RANGE:
+	# 1. Target the closest edge/corner of the Forge hitbox (32x32px boundary)
+	var box_min = forge_pos - Vector2(16, 16)
+	var box_max = forge_pos + Vector2(16, 16)
+	var target_pos = Vector2(
+		clamp(global_position.x, box_min.x, box_max.x),
+		clamp(global_position.y, box_min.y, box_max.y)
+	)
+
+	# 2. Check if we have arrived at the edge of the Forge
+	if global_position.distance_to(target_pos) <= ATTACK_RANGE:
 		_attack_forge(forge)
 		return
 
-	match _state:
-		State.SEEK:
-			_do_seek(delta, forge_pos)
-		State.AVOID:
-			_do_avoid(delta, forge_pos)
+	# 3. Calculate direction to closest point on the Forge
+	var desired_dir = (target_pos - global_position).normalized()
+	velocity = desired_dir * SPEED
 
-# ── SEEK: move straight toward forge, detect if stuck ─────
-func _do_seek(delta: float, forge_pos: Vector2) -> void:
-	var dir = (forge_pos - global_position).normalized()
-	velocity = dir * SPEED
+	# Move and handle collisions
 	move_and_slide()
 
-	# Poll position to see if we actually moved
-	_stuck_poll_timer += delta
-	if _stuck_poll_timer >= POLL_INTERVAL:
-		var moved = global_position.distance_to(_last_pos)
-		if moved < STUCK_MIN_DIST:
-			_enter_avoid(dir, forge_pos)   # blocked — go perpendicular
-		_last_pos         = global_position
-		_stuck_poll_timer = 0.0
-
-	_update_sprite(dir)
-
-# ── AVOID: move perpendicular for AVOID_DURATION, then retry
-func _do_avoid(delta: float, forge_pos: Vector2) -> void:
-	_avoid_timer -= delta
-	if _avoid_timer <= 0.0:
-		_state            = State.SEEK
-		_last_pos         = global_position
-		_stuck_poll_timer = 0.0
-		return
-
-	velocity = _avoid_dir * SPEED
-	move_and_slide()
-	_update_sprite(_avoid_dir)
-
-# ── Pick axis-aligned perpendicular direction ─────────────
-func _enter_avoid(seek_dir: Vector2, forge_pos: Vector2) -> void:
-	if abs(seek_dir.x) >= abs(seek_dir.y):
-		# Primarily moving horizontally → dodge vertically
-		# Pick up or down — whichever is closer to the forge
-		_avoid_dir = Vector2(0.0, -1.0) if forge_pos.y < global_position.y else Vector2(0.0, 1.0)
+	# 4. Real-time collision avoidance (slide smoothly along wall tangents)
+	if get_slide_collision_count() > 0:
+		var collision = get_slide_collision(0)
+		var normal = collision.get_normal()
+		# Only slide if we are pushing against the collision boundary
+		if normal.dot(desired_dir) < 0:
+			# Get the two perpendicular tangents to the wall normal
+			var tangent1 = Vector2(-normal.y, normal.x)
+			var tangent2 = Vector2(normal.y, -normal.x)
+			# Choose the tangent that makes positive progress toward the forge
+			var slide_dir = tangent1 if tangent1.dot(desired_dir) > tangent2.dot(desired_dir) else tangent2
+			# Move along the tangent
+			velocity = slide_dir * SPEED
+			move_and_slide()
+			_update_sprite(slide_dir)
+		else:
+			_update_sprite(desired_dir)
 	else:
-		# Primarily moving vertically → dodge horizontally
-		_avoid_dir = Vector2(-1.0, 0.0) if forge_pos.x < global_position.x else Vector2(1.0, 0.0)
-
-	_avoid_timer      = AVOID_DURATION
-	_last_pos         = global_position
-	_stuck_poll_timer = 0.0
-	_state            = State.AVOID
+		_update_sprite(desired_dir)
 
 func _update_sprite(direction: Vector2) -> void:
 	if anim:
