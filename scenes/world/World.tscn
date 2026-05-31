@@ -459,7 +459,7 @@ shape = SubResource("RectangleShape2D_i08rc")
 script = ExtResource("6_i1jm3")
 
 [node name="Forge" parent="." unique_id=1444986659 instance=ExtResource("7_252at")]
-position = Vector2(600, 330)
+position = Vector2(500, 300)
 
 [node name="DayNightOverlay" type="CanvasLayer" parent="." unique_id=1837764449]
 script = ExtResource("8_qh0kd")
