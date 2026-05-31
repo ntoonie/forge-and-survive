@@ -6,6 +6,32 @@ extends CanvasLayer
 @onready var timer_label = $Control/ResourcePanel/TimerLabel
 @onready var wave_label = $Control/ResourcePanel/WaveLabel
 
+var pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
+var pause_menu_instance = null
+
+func _ready():
+	var control = $Control
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var gear = get_node_or_null("Control/GearButton")
+	if gear:
+		gear.ignore_texture_size = true
+		gear.stretch_mode = TextureButton.STRETCH_SCALE
+		gear.custom_minimum_size = Vector2(48, 48)
+		await get_tree().process_frame
+		gear.size = Vector2(98, 98)
+		gear.position = Vector2(1092, 8)
+		gear.pressed.connect(_on_gear_pressed)
+	else:
+		print("GearButton not found!")
+
+func _on_gear_pressed():
+	if pause_menu_instance == null:
+		pause_menu_instance = pause_menu_scene.instantiate()
+		get_tree().current_scene.add_child(pause_menu_instance)
+	pause_menu_instance.visible = true
+	get_tree().paused = true
+
 func _process(_delta):
 	iron_label.text = "Iron: " + str(GameData.resources["iron"])
 	wood_label.text = "Wood: " + str(GameData.resources["wood"])

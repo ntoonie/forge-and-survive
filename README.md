@@ -79,9 +79,9 @@ The gameplay transitions dynamically between two distinct states:
 *   **Grid Size:** 32x32 pixel cells.
 *   **Placement Mechanics:** Pressing `B` toggles Build Mode. A dynamic color-coded preview ghost (semi-transparent grid block) tracks the snapped mouse coordinate.
 *   **Material Costs:**
-    *   **Wall:** `1 Stone` — Blocks enemy navigation completely.
-    *   **Arrow Tower:** `1 Wood + 1 Iron` — Automatically shoots the nearest target in range.
-    *   **Floor Spikes:** `1 Wood + 1 Stone` — Allows enemies to pass over, but deals high periodic damage.
+	*   **Wall:** `1 Stone` — Blocks enemy navigation completely.
+	*   **Arrow Tower:** `1 Wood + 1 Iron` — Automatically shoots the nearest target in range.
+	*   **Floor Spikes:** `1 Wood + 1 Stone` — Allows enemies to pass over, but deals high periodic damage.
 
 ### 3. Structure Catalogue
 *   **Wall (`wall.tscn`):** Hard solid obstacle with 100 HP, routing enemies through secondary pathways.

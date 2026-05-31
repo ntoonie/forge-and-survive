@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://gtc27y7orqrh"]
+
+[ext_resource type="Script" uid="uid://dcrvxhkd5pwvq" path="res://scripts/ui/pause_menu.gd" id="1_0bnpd"]
+[ext_resource type="Texture2D" uid="uid://bkquuwbrmkilc" path="res://assets/sprites/pause_menu/resume_button.png" id="3_8fwbo"]
+[ext_resource type="Texture2D" uid="uid://bnou2mwiscnbt" path="res://assets/sprites/pause_menu/restart_button.png" id="4_2rlsb"]
+[ext_resource type="Texture2D" uid="uid://bs6r4dkxckhdk" path="res://assets/sprites/pause_menu/quit2_button.png" id="5_coo1x"]
+
+[node name="PauseMenu" type="Control" unique_id=3504740]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0bnpd")
+
+[node name="ResumeButton" type="TextureButton" parent="." unique_id=1756276074]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 224.0
+offset_right = 676.0
+offset_bottom = 274.0
+texture_normal = ExtResource("3_8fwbo")
+
+[node name="RestartButton" type="TextureButton" parent="." unique_id=1907813867]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 299.0
+offset_right = 676.0
+offset_bottom = 349.0
+texture_normal = ExtResource("4_2rlsb")
+
+[node name="QuitButton" type="TextureButton" parent="." unique_id=1633665681]
+layout_mode = 0
+offset_right = 476.0
+offset_bottom = 374.0
+texture_normal = ExtResource("5_coo1x")

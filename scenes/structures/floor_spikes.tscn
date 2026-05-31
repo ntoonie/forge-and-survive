@@ -1,14 +1,14 @@
-[gd_scene format=3 uid="uid://spikes_struct01"]
+[gd_scene format=3 uid="uid://cm3f33chvdoxt"]
 
-[ext_resource type="Script" uid="uid://floor_spikes_script01" path="res://scripts/structures/floor_spikes.gd" id="1_spikes"]
+[ext_resource type="Script" path="res://scripts/structures/floor_spikes.gd" id="1_spikes"]
 [ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="2_struct"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spikes"]
+size = Vector2(32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_spikes"]
 atlas = ExtResource("2_struct")
 region = Rect2(68, 84, 41, 14)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_spikes"]
-size = Vector2(32, 32)
 
 [node name="FloorSpikes" type="Area2D" unique_id=2002000001]
 script = ExtResource("1_spikes")
@@ -21,5 +21,4 @@ texture = SubResource("AtlasTexture_spikes")
 
 [node name="DamageTimer" type="Timer" parent="." unique_id=2002000004]
 wait_time = 0.5
-one_shot = false
 autostart = true

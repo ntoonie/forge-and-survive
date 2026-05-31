@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dkpiss73hn85r"]
 
 [ext_resource type="Script" uid="uid://u1ocvxot5qja" path="res://scripts/ui/hud.gd" id="1_kw0id"]
+[ext_resource type="Texture2D" uid="uid://dm3b7w5clft08" path="res://assets/sprites/pause_menu/gear_button.png" id="2_atyv1"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1264581366]
 script = ExtResource("1_kw0id")
@@ -38,3 +39,9 @@ text = "Day: 60s"
 layout_mode = 2
 text = "Wave: 1/5
 "
+
+[node name="GearButton" type="TextureButton" parent="Control" unique_id=1780611435]
+layout_mode = 0
+offset_right = 1536.0
+offset_bottom = 1024.0
+texture_normal = ExtResource("2_atyv1")

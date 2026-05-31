@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://c5p402jpsethj" path="res://scenes/Enemy/Wave_manager.gd" id="5_c01mt"]
 [ext_resource type="Script" uid="uid://cd0u1rr7pa4tq" path="res://scripts/systems/game_loop.gd" id="6_c01mt"]
 [ext_resource type="Script" uid="uid://lsnhucc13mwt" path="res://scripts/systems/resource_spawner.gd" id="7_nxtc6"]
+[ext_resource type="PackedScene" uid="uid://gtc27y7orqrh" path="res://scenes/ui/pause_menu.tscn" id="8_jlsqs"]
 
 [node name="Main" type="Node2D" unique_id=1632719062]
 
@@ -41,3 +42,5 @@ script = ExtResource("6_c01mt")
 
 [node name="ResourceSpawner" type="Node" parent="." unique_id=1901407918]
 script = ExtResource("7_nxtc6")
+
+[node name="PauseMenu" parent="." unique_id=3504740 instance=ExtResource("8_jlsqs")]
