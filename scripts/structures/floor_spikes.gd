@@ -6,6 +6,9 @@ const TICK_INTERVAL : float = 0.5
 # Enemies currently standing on the spikes
 var _bodies_in_zone : Array[Node] = []
 
+# ── Spike durability ───────────────────────────────────────────
+var ticks_remaining: int = 30
+
 @onready var tick_timer : Timer = $DamageTimer
 
 
@@ -35,7 +38,16 @@ func _on_body_exited(body: Node) -> void:
 # ── Periodic tick ─────────────────────────────────────────────────
 
 func _on_tick() -> void:
+    # Only consume durability when there are enemies to damage
+    var enemies_hit := false
     # Iterate a copy so mid-loop removal (enemy death) is safe
     for enemy in _bodies_in_zone.duplicate():
         if is_instance_valid(enemy) and enemy.has_method("take_damage"):
             enemy.take_damage(TICK_DAMAGE)
+            enemies_hit = true
+
+    if enemies_hit:
+        ticks_remaining -= 1
+        if ticks_remaining <= 0:
+            print("Floor spikes exhausted after repeated use!")
+            queue_free()

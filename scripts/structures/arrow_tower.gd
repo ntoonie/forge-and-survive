@@ -7,6 +7,9 @@ extends StaticBody2D
 var current_health: int
 var enemies_in_range: Array = []
 
+# ── Shot durability ────────────────────────────────────────────
+var shots_remaining: int = 15
+
 func _ready():
 	current_health = max_health
 	$DetectionRange.body_entered.connect(_on_enemy_entered)
@@ -33,7 +36,15 @@ func _shoot():
 	target.take_damage(damage)
 	print("Tower shot enemy! Enemy health: ", target.current_health)
 
+	# Decrement shot durability
+	shots_remaining -= 1
+	if shots_remaining <= 0:
+		print("Tower worn out after firing too many shots!")
+		SAPathfinder.remove_wall(global_position)
+		queue_free()
+
 func take_damage(amount: int):
 	current_health -= amount
 	if current_health <= 0:
+		SAPathfinder.remove_wall(global_position)
 		queue_free()

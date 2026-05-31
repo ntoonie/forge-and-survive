@@ -1,122 +1,152 @@
-# Forge and Survive
+# Forge & Survive
 
-Forge and Survive is a top-down 2D resource-gathering and survival game prototype currently transitioning to a desktop-native application built with Raylib 5.0 and C++, targeting a 16-bit / Game Boy Advance graphical aesthetic. It features character movement, an area-based interaction system, a centralized global game state to manage gathered resources, and advanced pathfinding algorithms.
+Forge & Survive is a top-down 2D resource-gathering, survival, and tower defense game built with **Godot 4.6 (GL Compatibility/Compatibility renderer)**. Set in a 16-bit retro aesthetic, the game challenges the player to collect essential resources during the day, construct formidable defenses, and survive night waves of raiders that utilize a **Simulated Annealing AI pathfinding** model to navigate around obstacles and traps to destroy the central Forge.
 
-## Project Structure
+---
 
-The project is structured into two main directories: the original Godot 4.6 prototype and the new native Raylib implementation (`New-Forge`).
+## 📂 Project Directory Structure
+
+Based on the `forge-and-survive/` folder layout:
 
 ```
 forge-and-survive/
 ├── assets/
 │   └── sprites/
-│       ├── enemy_1.png         # Spritesheet asset for enemies
-│       ├── player.png          # Spritesheet asset for player
-│       └── terrain_tiles/      # Terrain tiles and environment assets
+│       ├── enemy_1.png         # Animated spritesheet for raider enemies
+│       ├── player.png          # Animated spritesheet for the player
+│       └── structure.png       # Atlas texture for walls, towers, and floor spikes
+├── scenes/
+│   ├── Main.tscn               # Master scene coordinating HUD, World, and loops
+│   ├── Enemy/
+│   │   └── character_body_2d.tscn # Enemy node base
+│   ├── player/
+│   │   # Player instantiations
+│   ├── structures/
+│   │   ├── floor_spikes.tscn   # Floor spikes Area2D structure
+│   │   ├── forge.tscn          # Central Forge target structure
+│   │   ├── tower.tscn          # Defensive Arrow Tower structure
+│   │   └── wall.tscn           # Defensive Wall structure
+│   ├── ui/
+│   │   ├── HUD.tscn            # Canvas HUD showing wave timer, counts, resources
+│   │   ├── VictoryScreen.tscn  # Game victory scene
+│   │   ├── arrow_tower.tscn    # Defensive Arrow Tower instantiable scene
+│   │   └── defeat_screen.tscn  # Defeat/Retry overlay scene
+│   └── world/
+│       ├── ResourceNode.tscn   # Base resource node template
+│       ├── World.tscn          # Main level design tilemap & spawn markers
+│       ├── ironnode.tscn       # Gatherable Iron Node
+│       ├── stonenode.tscn      # Gatherable Stone Node
+│       └── woodnode.tscn       # Gatherable Wood Node
+├── scripts/
+│   ├── Enemies/
+│   │   ├── Raiderbody.gd       # Simple sliding navigation AI prototype
+│   │   └── enemy_health.gd     # Main raider movement, path follower & state script
+│   ├── ai/
+│   │   └── sa_pathfinder.gd    # Simulated Annealing local optimization pathfinder
+│   ├── player/
+│   │   └── player.gd           # Physics-based player movement & sprite animation
+│   ├── structures/
+│   │   └── arrow_tower.gd      # Range detection & auto-shoot combat logic
+│   ├── systems/
+│   │   ├── build_system.gd     # Grid snapping placement, preview, & validation
+│   │   ├── day_night_overlay.gd# Smooth overlay shading for phase transitions
+│   │   ├── floor_spikes.gd     # Spikes periodic Area2D tick damage logic
+│   │   ├── forge.gd            # Central objective state, health, & game over
+│   │   ├── game_data.gd        # Global resource inventory Singleton
+│   │   ├── game_loop.gd        # Phase-switching (Day/Night) wave controller
+│   │   ├── resource_spawner.gd # Spawn controller for resource nodes
+│   │   └── structure_health.gd # Reusable health, damage, & destruction node
+│   └── ui/
+│       ├── defeat_screen.gd
+│       ├── hud.gd              # Dynamic label processing for player HUD
+│       └── victory_screen.gd
 ├── SA_prototype/
-│   ├── sa_prototype.py         # Python simulated annealing prototype
-│   └── sa_result.png           # Exported visual result of python prototype
-└── README.md                   # Project documentation
-
-New-Forge/
-├── CMakeLists.txt              # CMake build configuration fetching Raylib 5.0
-└── src/
-	├── main.cpp                # Application entry point and main loop
-	├── game.h/.cpp             # Global state and Day/Night loop management
-	├── player.h/.cpp           # Player controller and rendering
-	├── world.h/.cpp            # Tilemap rendering and resource nodes
-	├── enemy_ai.h/.cpp         # Simulated Annealing AI and enemies
-	└── build_system.h/.cpp     # Structure placement logic
+│   ├── sa_prototype.py         # Python simulated annealing design script
+│   └── sa_result.png           # Plotted path mutation visualization
+├── project.godot               # Engine configuration & input mappings
+└── README.md                   # Project documentation (This file)
 ```
 
-## System Architecture (Raylib 5.0 C++ Port)
+## ⚙️ Core Systems & Game Architecture
 
-The Raylib implementation is built around a decoupled object-oriented architecture in C++, adopting principles from the original Godot node hierarchy while maximizing native performance.
+### 1. Phase-based Game Loop (`game_loop.gd`, `day_night_overlay.gd`)
+The gameplay transitions dynamically between two distinct states:
+*   **Build Phase (Day - 60s):** The player gathers materials (Iron, Wood, Stone) and places defensive walls, arrow towers, and floor spikes.
+*   **Defense Phase (Night):** Enemy raiders spawn from the outskirts and march toward the Forge. Building placement is locked. The night concludes when all enemies are defeated.
+*   *Visuals:* A canvas overlay handles transitions, rendering a smooth dark color shading during the night to establish a tense defense atmosphere.
 
-### 1. Global State Management
-* **Component:** `Game` Class
-* **Purpose:** Acts as a centralized manager that persists throughout the application lifecycle.
-* **Details:**
-  * Maintains an internal state of resource counts: `iron`, `wood`, and `stone`.
-  * Manages the Day (Build Phase) and Night (Defense Phase) cycles.
-  * Adjusts the render target canvas shading for night transitions.
+### 2. Grid Placement & Construction System (`build_system.gd`)
+*   **Grid Size:** 32x32 pixel cells.
+*   **Placement Mechanics:** Pressing `B` toggles Build Mode. A dynamic color-coded preview ghost (semi-transparent grid block) tracks the snapped mouse coordinate.
+*   **Material Costs:**
+    *   **Wall:** `1 Stone` — Blocks enemy navigation completely.
+    *   **Arrow Tower:** `1 Wood + 1 Iron` — Automatically shoots the nearest target in range.
+    *   **Floor Spikes:** `1 Wood + 1 Stone` — Allows enemies to pass over, but deals high periodic damage.
 
-### 2. Player Controller
-* **Component:** `Player` Class
-* **Purpose:** Handles physics-based movement, collision detection, and sprite rendering.
-* **Details:**
-  * Reads 8-directional input via WASD or arrow keys.
-  * Normalizes movement vectors to maintain a consistent speed of `150.0` pixels per second.
-  * Utilizes Raylib texture drawing functions to animate the player sprite from `player.png`.
+### 3. Structure Catalogue
+*   **Wall (`wall.tscn`):** Hard solid obstacle with 100 HP, routing enemies through secondary pathways.
+*   **Arrow Tower (`arrow_tower.gd`):** Uses an Area2D sensor to track encroaching enemies. Every `ShootTimer` interval, it shoots for **10 damage**.
+*   **Floor Spikes (`floor_spikes.gd`):** An Area2D structure designed with a periodic tick timer (`0.8s` interval) that deals **20 damage** (double the tower's power!) to all overlapping raiders, bypassing movement blockages to weaken incoming waves.
 
-### 3. Proximity Interaction System
-* **Component:** `World` and `ResourceNode` Classes
-* **Purpose:** Logic for interactive world objects (Wood, Stone, Iron).
-* **Details:**
-  * Uses simple circle/rectangle collision checks (`CheckCollisionCircleRec`) to detect player proximity.
-  * Listens for the `interact` action (mapped to the physical **E** key).
-  * Safely increments resource counts in the `Game` state and removes collected nodes from the active list.
-
-### 4. Build System & Grid Snapping
-* **Component:** `BuildSystem` Class
-* **Purpose:** Grid placement controller for player defenses (Walls, Towers).
-* **Details:**
-  * Uses 32x32 tiles for grid snapping coordinates.
-  * Displays a visual semi-transparent ghost preview following the mouse cursor.
-  * Validates material costs against the global resource state before finalizing placement.
-
-### 5. Simulated Annealing Pathfinding
-* **Component:** `EnemyAI` Class
-* **Purpose:** AI path calculation utilizing local search optimization.
-* **Details:**
-  * Translated from the Python/GDScript prototypes.
-  * Finds an initial path using Breadth-First Search (BFS) on the grid.
-  * Refines waypoints using simulated annealing over multiple iterations.
-  * Calculates path cost by factoring in distance and obstacle penalties.
-  * Dynamically accepts sub-optimal route mutations based on a falling cooling temperature, creating varied raider approach patterns.
-
-## Inputs and Controls
-
-* **Movement:** 
-  * Up: `W` or `Up Arrow`
-  * Down: `S` or `Down Arrow`
-  * Left: `A` or `Left Arrow`
-  * Right: `D` or `Right Arrow`
-* **Actions:**
-  * Toggle Build Mode: `B`
-  * Select Wall Structure: `1`
-  * Select Tower Structure: `2`
-  * Place Structure: `Left Mouse Button`
-  * Gather Resource: `E`
-
-## Getting Started (Raylib Native Build)
-
-1. Ensure you have CMake and a C++ compiler (like MSVC, GCC, or Clang) installed.
-2. Navigate into the `New-Forge` directory.
-3. Generate the build files:
-   `cmake -B build`
-4. Compile the project:
-   `cmake --build build --config Release`
-5. Run the generated executable. The game will automatically render at a low internal resolution scaled up to fit your window, preserving the 16-bit GBA aesthetic.
+### 4. Advanced Simulated Annealing AI (`sa_pathfinder.gd`, `enemy_health.gd`)
+Enemies navigate using a premium hybrid AI model combining grid mapping and local search heuristics:
+*   **Initial Vectoring:** A basic pathing blueprint serves as the navigation baseline.
+*   **Simulated Annealing Optimization:** Waypoints along the candidate path are iteratively mutated (shifted) and evaluated against a comprehensive cost function:
+    *   `Path Length:` Promotes shorter travel times.
+    *   `Trap Penalties:` Heavily penalizes routes routing directly through active **Floor Spikes** or hazards.
+*   **Stochastic Acceptance:** Even inferior path modifications are accepted with a probability of `P = e^(−ΔCost / T)`, enabling enemies to intelligently test flanking paths rather than getting funneled or trapped in predictable grid locks.
+*   **Angle-Sweep Escape:** If stuck or obstructed, enemies utilize an active angle-sweep algorithm to seamlessly slide past walls and continue their advance.
+*   **Swarm Pile-Up Logic:** Enemies in the back of a horde dynamically detect if they are clustered against other raiders attacking the Forge, allowing the entire depth of the pile to coordinate and deliver simultaneous structural damage.
+*   **Future AI Expansion:** Plans are in place to augment the Simulated Annealing macro-pathfinding with **Decision Trees** for micro-tactical state management (e.g., dodging, breaking structures) and **Genetic Algorithms** to adapt wave generation and enemy stats based on the player's defense strategy.
 
 ---
 
-## Development Roadmap & Status
+## 🎮 Game Controls
 
-This project is actively transitioning from Godot to Raylib.
+| Key / Input | Action |
+|:---:|---|
+| **`W` / `S` / `A` / `D`** or **Arrows** | Smooth Player Movement |
+| **`E`** | Proximity Interaction (Harvest iron, wood, and stone nodes) |
+| **`B`** | Toggle Construction Mode (Ghost grid preview becomes active) |
+| **`1`** | Select **Wall** structure |
+| **`2`** | Select **Arrow Tower** structure |
+| **`3`** | Select **Floor Spikes** structure |
+| **`Left Mouse Click`** | Place selected defense structure (Requires sufficient materials) |
 
-### Phase 1: Engine Migration & Project Setup
-* **Status:** In Progress
-* **Details:** Establishing CMake build systems and the core windowing logic using Raylib 5.0.
+---
 
-### Phase 2: Core Gameplay Port
-* **Status:** Planned
-* **Details:** Implementing tilemap rendering, player movement, and resource gathering logic in C++.
+## 🛠️ Development Roadmap & Current Progress
 
-### Phase 3: Defense & Building Port
-* **Status:** Planned
-* **Details:** Porting the grid snapping and structure placement logic.
+Following the strict, step-by-step milestone hierarchy from `forge_and_survive_roadmap.html`:
 
-### Phase 4: Simulated Annealing AI Port
-* **Status:** Planned
-* **Details:** Translating the GDScript pathfinder to a performant native C++ implementation.
+### ✅ Phase 1: Project Setup
+*   **Status:** **100% Completed**
+*   *Milestones:* Tool installations, Git repository initialization, and Master scene directory structure set up in Godot.
+
+### ✅ Phase 2: Core Gameplay
+*   **Status:** **100% Completed**
+*   *Milestones:* 32x32 pixel TileMap grid layout created, smooth 8-directional player movement with normal speed bounds, interactable resource gathering nodes, and dynamic resource state updates.
+
+### ✅ Phase 3: Defense System
+*   **Status:** **100% Completed**
+*   *Milestones:* Snapped grid placement system, color-coded structure preview blocks, material cost calculations, and solid wall, arrow tower, and floor spike implementations.
+
+### ✅ Phase 4: Enemy System
+*   **Status:** **100% Completed**
+*   *Milestones:* Spawn markers placed, wave scaling configurations, character bodies with anim controllers, and basic path tracking.
+
+### ✅ Phase 5: Complete Game Loop
+*   **Status:** **100% Completed**
+*   *Milestones:* State-machine-based Day/Night phase shifting, darkness canvas overlays, HUD metrics (wave count, timer, resource bars), and Forge health/victory screens.
+
+### ✅ Phase 6: AI Integration (Simulated Annealing)
+*   **Status:** **100% Completed**
+*   *Milestones:* Python SA algorithm prototyping, GDScript SA Pathfinder implementation, waypoint cost assessments (length vs. spike trap costs), and thermal cooling scheduler loops.
+
+### 🔄 Phase 7: Polish & Balancing
+*   **Status:** **In Progress**
+*   *Milestones:* Adjusting damage values (e.g., doubling Floor Spikes damage to `20` per tick relative to Tower's `10`), tuning spawn waves, UI feedback optimization, and final build package generation.
+
+
+> [!TIP]
+> **Running the Project:** Simply download and open the repository folder in **Godot 4.6+**, set the renderer to **Compatibility**, and press **F5** to run the complete prototype instantly!
