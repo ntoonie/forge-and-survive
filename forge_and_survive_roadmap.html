@@ -358,6 +358,158 @@
   @keyframes heat-pulse { from { width: 70%; } to { width: 85%; } }
   .heat-label { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); }
 
+  /* ── INTERACTIVE HEAT DEMO ── */
+  .heat-interactive {
+    background: #0d0b08;
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-top: 14px;
+  }
+  .heat-interactive-bar-wrap {
+    position: relative;
+    height: 28px;
+    border: 1px solid var(--border);
+    background: #050403;
+    overflow: visible;
+    margin: 10px 0 4px;
+  }
+  .heat-interactive-track {
+    height: 100%;
+    background: linear-gradient(90deg, #2277cc 0%, #e8a020 50%, #ff3300 100%);
+    width: 100%;
+    opacity: 0.15;
+  }
+  .heat-interactive-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, #2277cc 0%, #e8a020 50%, #ff3300 100%);
+    background-size: 100% 100%;
+    transition: width 0.1s;
+    pointer-events: none;
+  }
+  .heat-interactive-thumb {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 18px; height: 28px;
+    background: var(--gold);
+    border: 2px solid var(--bg);
+    cursor: ew-resize;
+    margin-left: -9px;
+    box-shadow: 0 0 8px rgba(232,160,32,0.6);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .heat-interactive-thumb:hover { box-shadow: 0 0 14px rgba(232,160,32,0.9); }
+  .heat-state-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .heat-readout {
+    display: flex; gap: 16px; align-items: stretch;
+    margin-top: 14px;
+  }
+  .heat-readout-state {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    transition: border-color 0.4s, background 0.4s;
+  }
+  .heat-readout-state .state-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    transition: color 0.4s;
+  }
+  .heat-readout-state .state-desc {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .heat-prob-panel {
+    min-width: 200px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; justify-content: center; gap: 6px;
+  }
+  .heat-prob-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .heat-prob-formula {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--gold2);
+  }
+  .heat-prob-val {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 22px;
+    font-weight: 700;
+    transition: color 0.4s;
+  }
+  .heat-prob-bar {
+    height: 6px;
+    background: #1a1508;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .heat-prob-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.3s, background 0.3s;
+  }
+  .heat-spike-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #ff3300;
+    color: #ff6633;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .heat-spike-btn:hover {
+    background: rgba(255,51,0,0.12);
+    box-shadow: 0 0 10px rgba(255,51,0,0.3);
+  }
+  .heat-spike-btn:active { transform: scale(0.98); }
+
+  /* ── PATHING DIAGRAM ── */
+  .path-diagram {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-top: 8px; flex-wrap: wrap;
+  }
+  .path-diagram canvas {
+    border: 1px solid var(--border);
+    background: #070604;
+    flex-shrink: 0;
+  }
+  .path-diagram-legend {
+    flex: 1; min-width: 160px;
+    font-size: 12px; line-height: 1.9;
+    color: var(--text);
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
   /* ── SA EXPLAINER ── */
   .sa-step {
     display: flex; gap: 14px; align-items: flex-start;
@@ -1247,6 +1399,40 @@ func on_wave_cleared():
       <div class="milestone-number">Milestone 6.1</div>
       <div class="milestone-title">Understanding Simulated Annealing</div>
       <div class="section-grid">
+
+        <!-- Current Pathing Context -->
+        <div class="section-card full-width">
+          <div class="section-label">Current Pathing Logic — How Raiders Move Right Now</div>
+          <p style="font-size:13px; margin-bottom:10px;">Before SA is applied, raiders use a simple <strong style="color:var(--gold);">vector-sliding collision avoidance</strong> to reach the Forge. Understanding this is essential — SA will <em>optimize the waypoints</em> that this system then follows.</p>
+          <div class="path-diagram" id="path-diagram-wrap">
+            <canvas id="path-canvas" width="340" height="200"></canvas>
+            <div class="path-diagram-legend">
+              <div><span class="legend-dot" style="background:#40a060"></span> Raider (spawns at edge)</div>
+              <div><span class="legend-dot" style="background:#e8a020"></span> Forge (target)</div>
+              <div><span class="legend-dot" style="background:#555"></span> Wall / Tower / Player</div>
+              <div style="margin-top:8px; color:var(--text-dim); font-size:11px; line-height:1.7;">
+                <strong style="color:var(--text);">Algorithm loop:</strong><br>
+                1. Move toward Forge<br>
+                2. Collision detected? ↓<br>
+                3. Project velocity onto collision normal<br>
+                4. Slide perpendicular to wall<br>
+                5. Loop until no collision → resume step 1
+              </div>
+              <div style="margin-top:10px; font-size:11px; background:rgba(0,0,0,0.3); padding:8px; border:1px solid var(--border); font-family:'Share Tech Mono',monospace; color:var(--gold2); line-height:1.6;">
+                # Raiderbody.gd (simplified)<br>
+                dir = (forge_pos - pos).normalized()<br>
+                if collision:<br>
+                &nbsp; dir = dir.slide(normal)<br>
+                velocity = dir * speed
+              </div>
+            </div>
+          </div>
+          <div class="warn-box" style="margin-top:12px;">
+            <strong>The Limitation:</strong> Sliding is reactive — raiders can get "funneled" through the same gap every wave. SA fixes this by pre-computing smarter waypoints so raiders probe different routes, not just the path of least resistance.
+          </div>
+        </div>
+
+        <!-- SA Steps -->
         <div class="section-card full-width">
           <div class="section-label">SA in Plain Language</div>
           <div class="sa-step">
@@ -1263,11 +1449,11 @@ func on_wave_cleared():
           </div>
           <div class="sa-step">
             <div class="sa-step-num">4</div>
-            <div class="sa-step-text"><strong>Sometimes accept worse.</strong> Even if the new path is worse, accept it with probability P = e^(-ΔCost/Temperature). This prevents the algorithm from getting stuck.</div>
+            <div class="sa-step-text"><strong>Sometimes accept worse.</strong> Even if the new path is worse, accept it with probability <code>P = e<sup>−ΔCost/T</sup></code>. This prevents the algorithm from getting stuck in a local minimum.</div>
           </div>
           <div class="sa-step">
             <div class="sa-step-num">5</div>
-            <div class="sa-step-text"><strong>Cool down.</strong> Each iteration, multiply temperature by 0.95. As temperature drops, the algorithm accepts fewer bad moves and "settles" on a good path.</div>
+            <div class="sa-step-text"><strong>Cool down.</strong> Each iteration, multiply temperature by <code>0.95</code>. As temperature drops, the algorithm accepts fewer bad moves and "settles" on a good path.</div>
           </div>
           <div class="sa-step">
             <div class="sa-step-num">6</div>
@@ -1275,11 +1461,12 @@ func on_wave_cleared():
           </div>
         </div>
 
+        <!-- SA vs A* -->
         <div class="section-card full-width">
           <div class="section-label">SA vs A* — The Key Difference</div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div>
-              <p style="font-family:'Cinzel',serif; font-size:12px; color:#4090d0; margin-bottom:6px;">A* Pathfinding</p>
+            <div style="padding:12px; border:1px solid #4090d030; background:#4090d008;">
+              <p style="font-family:'Cinzel',serif; font-size:12px; color:#4090d0; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #4090d030;">A* Pathfinding</p>
               <ul>
                 <li>Guarantees the shortest path</li>
                 <li>Always the same result</li>
@@ -1288,8 +1475,8 @@ func on_wave_cleared():
                 <li>Fast and simple to implement</li>
               </ul>
             </div>
-            <div>
-              <p style="font-family:'Cinzel',serif; font-size:12px; color:#40a060; margin-bottom:6px;">Simulated Annealing</p>
+            <div style="padding:12px; border:1px solid #40a06030; background:#40a06008;">
+              <p style="font-family:'Cinzel',serif; font-size:12px; color:#40a060; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #40a06030;">Simulated Annealing</p>
               <ul>
                 <li>Finds a <em>near-optimal</em> path</li>
                 <li>Varies each run (unpredictable)</li>
@@ -1301,13 +1488,43 @@ func on_wave_cleared():
           </div>
         </div>
 
+        <!-- Interactive Heat Meter -->
         <div class="section-card full-width">
-          <div class="section-label">Heat Meter — What It Shows Players</div>
-          <div class="heat-demo">
-            <span class="heat-label">COLD</span>
-            <div class="heat-bar-wrap"><div class="heat-fill"></div></div>
-            <span class="heat-label">HOT</span>
+          <div class="section-label">Heat Meter — Interactive Demo</div>
+          <p style="font-size:12px; color:var(--text-dim); margin-bottom:2px;">Drag the slider to change the raider's SA temperature. Watch how the accept-worse probability and raider behavior changes.</p>
+
+          <div class="heat-interactive" id="heat-interactive">
+            <div class="heat-state-label">
+              <span style="color:#2277cc;">❄ COLD — Committed</span>
+              <span style="color:#e8a020;">~ WARM — Weighing</span>
+              <span style="color:#ff3300;">🔥 HOT — Exploring</span>
+            </div>
+            <div class="heat-interactive-bar-wrap" id="heat-bar-region">
+              <div class="heat-interactive-track"></div>
+              <div class="heat-interactive-fill" id="heat-fill-interactive"></div>
+              <div class="heat-interactive-thumb" id="heat-thumb"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--text-dim); margin-top:4px;">
+              <span>T = 0</span><span>T = 50</span><span>T = 100</span>
+            </div>
+
+            <div class="heat-readout">
+              <div class="heat-readout-state" id="heat-state-card">
+                <div class="state-name" id="heat-state-name">WARM</div>
+                <div class="state-desc" id="heat-state-desc">Raiders are actively weighing options. Their path may shift slightly each wave. Medium exploration — partly predictable.</div>
+              </div>
+              <div class="heat-prob-panel">
+                <div class="heat-prob-label">Accept-Worse Probability</div>
+                <div class="heat-prob-formula">P = e<sup>−10/T</sup></div>
+                <div class="heat-prob-val" id="heat-prob-val">50%</div>
+                <div class="heat-prob-bar"><div class="heat-prob-bar-fill" id="heat-prob-bar-fill" style="width:50%"></div></div>
+                <div style="font-size:10px; color:var(--text-dim); margin-top:4px; font-family:'Share Tech Mono',monospace;">ΔCost = 10 (fixed example)</div>
+              </div>
+            </div>
+
+            <button class="heat-spike-btn" id="heat-spike-btn" onclick="spikeHeatMeter()">⚡ Activate Distraction — Spike Temperature to HOT</button>
           </div>
+
           <p style="margin-top:12px; font-size:13px;">
             <strong style="color:#2277cc;">Cold (blue):</strong> Raiders are "committed" — they've locked onto a path. Predictable for a moment.<br>
             <strong style="color:#e8a020;">Warm (amber):</strong> Raiders are weighing options. Somewhat unpredictable.<br>
@@ -1315,6 +1532,7 @@ func on_wave_cleared():
             The <strong style="color:var(--gold);">Distraction ability</strong> spikes the temperature back to Hot, forcing re-exploration.
           </p>
         </div>
+
       </div>
     </div>
 
@@ -1748,6 +1966,278 @@ document.querySelectorAll('nav a').forEach(a => {
     }
   });
 });
+
+// ── INTERACTIVE HEAT METER ──────────────────────────────────────
+(function() {
+  let heatTemp = 50; // 0..100
+  const DELTA_COST = 10; // fixed example delta
+
+  const thumb       = document.getElementById('heat-thumb');
+  const fillEl      = document.getElementById('heat-fill-interactive');
+  const region      = document.getElementById('heat-bar-region');
+  const stateName   = document.getElementById('heat-state-name');
+  const stateDesc   = document.getElementById('heat-state-desc');
+  const stateCard   = document.getElementById('heat-state-card');
+  const probVal     = document.getElementById('heat-prob-val');
+  const probBarFill = document.getElementById('heat-prob-bar-fill');
+  const spikeBtn    = document.getElementById('heat-spike-btn');
+
+  if (!thumb || !region) return;
+
+  function tempToColor(t) {
+    // 0=cold blue, 50=amber, 100=hot red
+    if (t < 50) {
+      const r = lerp(0x22, 0xe8, t / 50);
+      const g = lerp(0x77, 0xa0, t / 50);
+      const b = lerp(0xcc, 0x20, t / 50);
+      return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+    } else {
+      const r = lerp(0xe8, 0xff, (t - 50) / 50);
+      const g = lerp(0xa0, 0x33, (t - 50) / 50);
+      const b = lerp(0x20, 0x00, (t - 50) / 50);
+      return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+    }
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  const states = [
+    { range: [0, 30],  name: 'COLD — Committed',    color: '#2277cc',
+      desc: 'Raiders have locked onto a path and follow it closely. Very predictable \u2014 your defenses will see the same route repeatedly. Good time to reinforce choke points.' },
+    { range: [30, 65], name: 'WARM — Weighing',      color: '#e8a020',
+      desc: 'Raiders are actively weighing options. Their path may shift slightly each wave. Medium exploration \u2014 partly predictable. The algorithm can still accept a worse route occasionally.' },
+    { range: [65, 100], name: 'HOT — Exploring',    color: '#ff3300',
+      desc: 'Full exploration mode. Raiders are erratic, probing every gap in your defense. The accept-worse probability is high \u2014 they may take detours just to find a new angle of attack.' },
+  ];
+
+  function getState(t) {
+    for (const s of states) if (t >= s.range[0] && t <= s.range[1]) return s;
+    return states[2];
+  }
+
+  function calcProb(t) {
+    if (t < 0.001) return 0;
+    return Math.exp(-DELTA_COST / t);
+  }
+
+  function update() {
+    const pct = heatTemp / 100;
+    thumb.style.left = (pct * 100) + '%';
+    fillEl.style.width = (pct * 100) + '%';
+
+    const col = tempToColor(heatTemp);
+    thumb.style.background = col;
+    thumb.style.boxShadow  = `0 0 10px ${col}99`;
+
+    const st = getState(heatTemp);
+    stateName.textContent = st.name;
+    stateName.style.color = st.color;
+    stateDesc.textContent = st.desc;
+    stateCard.style.borderColor = st.color + '55';
+
+    const prob = calcProb(heatTemp);
+    const probPct = Math.round(prob * 100);
+    probVal.textContent = probPct + '%';
+    probVal.style.color = col;
+    probBarFill.style.width  = probPct + '%';
+    probBarFill.style.background = col;
+  }
+
+  // Drag logic
+  let dragging = false;
+  thumb.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+  region.addEventListener('mousedown', e => {
+    if (e.target === region || e.target.classList.contains('heat-interactive-track') || e.target.classList.contains('heat-interactive-fill')) {
+      dragging = true;
+      moveTo(e);
+    }
+  });
+  document.addEventListener('mousemove', e => { if (dragging) moveTo(e); });
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  // Touch support
+  thumb.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (dragging) moveTo(e.touches[0]); }, { passive: true });
+  document.addEventListener('touchend', () => { dragging = false; });
+
+  function moveTo(e) {
+    const rect = region.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    x = Math.max(0, Math.min(rect.width, x));
+    heatTemp = (x / rect.width) * 100;
+    update();
+  }
+
+  // Spike (Distraction ability)
+  let spiking = false;
+  window.spikeHeatMeter = function() {
+    if (spiking) return;
+    spiking = true;
+    spikeBtn.disabled = true;
+    spikeBtn.textContent = '⏳ Cooling down...';
+    heatTemp = 100;
+    update();
+
+    // Gradually cool back
+    const coolInterval = setInterval(() => {
+      heatTemp = Math.max(0, heatTemp - 1.5);
+      update();
+      if (heatTemp <= 0) {
+        clearInterval(coolInterval);
+        spiking = false;
+        spikeBtn.disabled = false;
+        spikeBtn.textContent = '⚡ Activate Distraction — Spike Temperature to HOT';
+      }
+    }, 60);
+  };
+
+  update();
+})();
+
+// ── PATHING CANVAS DIAGRAM ──────────────────────────────────────
+(function() {
+  const canvas = document.getElementById('path-canvas');
+  if (!canvas) return;
+  const c = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Grid cells 10px each
+  const CELL = 10;
+  const COLS = W / CELL, ROWS = H / CELL;
+
+  // Walls: array of {x,y} in cell coords
+  const walls = [
+    {x:10,y:4},{x:10,y:5},{x:10,y:6},{x:10,y:7},{x:10,y:8},
+    {x:11,y:8},{x:12,y:8},{x:13,y:8},
+    {x:20,y:7},{x:20,y:8},{x:20,y:9},{x:20,y:10},{x:20,y:11},
+    {x:21,y:7},{x:22,y:7},
+  ];
+  const wallSet = new Set(walls.map(w => w.x + ',' + w.y));
+
+  function isWall(cx, cy) { return wallSet.has(cx + ',' + cy); }
+  function worldToCell(wx, wy) { return { x: Math.floor(wx / CELL), y: Math.floor(wy / CELL) }; }
+
+  // Raider state
+  const FORGE = { x: 28 * CELL + 5, y: 10 * CELL + 5 };
+  const SPAWN = { x: CELL, y: 10 * CELL + 5 };
+
+  let raider = { x: SPAWN.x, y: SPAWN.y, vx: 0, vy: 0 };
+  let trail = [];
+  const SPEED = 1.4;
+
+  function resetRaider() {
+    raider.x = SPAWN.x;
+    raider.y = SPAWN.y;
+    trail = [];
+  }
+
+  function stepRaider() {
+    // Direction to forge
+    const dx = FORGE.x - raider.x;
+    const dy = FORGE.y - raider.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 5) { resetRaider(); return; }
+
+    let nx = dx / dist, ny = dy / dist;
+
+    // Check collision in front
+    const testX = raider.x + nx * CELL * 0.7;
+    const testY = raider.y + ny * CELL * 0.7;
+    const cell = worldToCell(testX, testY);
+
+    if (isWall(cell.x, cell.y)) {
+      // Slide: pick perpendicular that still moves toward forge
+      // Try sliding along wall normal (perpendicular to move dir)
+      const perp1 = { x: -ny, y: nx };
+      const perp2 = { x: ny, y: -nx };
+      // Pick the perpendicular that has a positive dot with forge dir
+      const dot1 = perp1.x * dx + perp1.y * dy;
+      const chosen = dot1 > 0 ? perp1 : perp2;
+      nx = chosen.x; ny = chosen.y;
+    }
+
+    raider.x += nx * SPEED;
+    raider.y += ny * SPEED;
+    trail.push({ x: raider.x, y: raider.y });
+    if (trail.length > 120) trail.shift();
+  }
+
+  function drawFrame() {
+    c.clearRect(0, 0, W, H);
+
+    // Background grid (subtle)
+    c.fillStyle = '#090806';
+    c.fillRect(0, 0, W, H);
+
+    for (let gx = 0; gx < COLS; gx++) {
+      for (let gy = 0; gy < ROWS; gy++) {
+        if ((gx + gy) % 2 === 0) {
+          c.fillStyle = 'rgba(255,255,255,0.015)';
+          c.fillRect(gx * CELL, gy * CELL, CELL, CELL);
+        }
+      }
+    }
+
+    // Draw walls
+    walls.forEach(w => {
+      c.fillStyle = '#3a3028';
+      c.fillRect(w.x * CELL + 1, w.y * CELL + 1, CELL - 2, CELL - 2);
+      c.strokeStyle = '#554838';
+      c.strokeRect(w.x * CELL + 1, w.y * CELL + 1, CELL - 2, CELL - 2);
+    });
+
+    // Forge
+    c.fillStyle = '#e8a020';
+    c.shadowColor = '#e8a020';
+    c.shadowBlur = 10;
+    c.beginPath();
+    c.arc(FORGE.x, FORGE.y, 7, 0, Math.PI * 2);
+    c.fill();
+    c.shadowBlur = 0;
+
+    c.fillStyle = '#f5c842';
+    c.font = 'bold 7px monospace';
+    c.textAlign = 'center';
+    c.fillText('FORGE', FORGE.x, FORGE.y - 10);
+
+    // Trail
+    if (trail.length > 1) {
+      c.beginPath();
+      c.moveTo(trail[0].x, trail[0].y);
+      for (let i = 1; i < trail.length; i++) {
+        c.lineTo(trail[i].x, trail[i].y);
+      }
+      c.strokeStyle = 'rgba(64,160,96,0.35)';
+      c.lineWidth = 1.5;
+      c.stroke();
+    }
+
+    // Direct-line indicator (dashed, toward forge)
+    c.setLineDash([3, 4]);
+    c.beginPath();
+    c.moveTo(raider.x, raider.y);
+    c.lineTo(FORGE.x, FORGE.y);
+    c.strokeStyle = 'rgba(232,160,32,0.15)';
+    c.lineWidth = 1;
+    c.stroke();
+    c.setLineDash([]);
+
+    // Raider
+    c.fillStyle = '#40a060';
+    c.shadowColor = '#40a060';
+    c.shadowBlur = 8;
+    c.beginPath();
+    c.arc(raider.x, raider.y, 5, 0, Math.PI * 2);
+    c.fill();
+    c.shadowBlur = 0;
+
+    stepRaider();
+    requestAnimationFrame(drawFrame);
+  }
+
+  resetRaider();
+  drawFrame();
+})();
 </script>
 </body>
 </html>

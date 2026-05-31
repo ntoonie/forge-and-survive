@@ -33,3 +33,7 @@ func _physics_process(_delta):
 	else:
 		if anim.animation != "running":
 			anim.play("running")
+
+
+func _on_forge_child_order_changed() -> void:
+	pass # Replace with function body.
