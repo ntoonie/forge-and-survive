@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://b6nrij7hq7nje"]
 
 [ext_resource type="Script" uid="uid://dssxyjo4yth7h" path="res://scripts/ui/defeat_screen.gd" id="1_vyvod"]
+[ext_resource type="Texture2D" uid="uid://d1yrq03lmbm7p" path="res://assets/sprites/VICTORY-DEFEAT_512x512.png" id="2_8xv38"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_db0v4"]
+atlas = ExtResource("2_8xv38")
+region = Rect2(283.28943, 24.314095, 204.13232, 206.61166)
 
 [node name="DefeatScreen" type="Control" unique_id=72467023]
 layout_mode = 3
@@ -11,18 +16,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vyvod")
 
-[node name="Label" type="Label" parent="." unique_id=1909801191]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "THE FORGE HAS FALLEN"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Button" type="Button" parent="." unique_id=1768712251]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 502.0
+offset_top = 417.0
+offset_right = 583.0
+offset_bottom = 448.0
 text = "Try Again"
+
+[node name="DefeatSprite" type="TextureRect" parent="." unique_id=770367038]
+layout_mode = 0
+offset_left = 439.0
+offset_top = 191.0
+offset_right = 643.0
+offset_bottom = 397.0
+texture = SubResource("AtlasTexture_db0v4")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

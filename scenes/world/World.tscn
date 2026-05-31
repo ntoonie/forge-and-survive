@@ -432,9 +432,10 @@ tile_set = SubResource("TileSet_7g83o")
 [node name="Player" parent="." unique_id=909018891 groups=["player"] instance=ExtResource("2_1oml7")]
 position = Vector2(23, 31)
 scale = Vector2(2.305, 2.305)
+safe_margin = 0.04
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="Player" unique_id=175497975]
-scale = Vector2(1.2, 1.2)
+scale = Vector2(1.1, 1.1)
 sprite_frames = SubResource("SpriteFrames_0duuj")
 animation = &"running"
 frame_progress = 0.67894125

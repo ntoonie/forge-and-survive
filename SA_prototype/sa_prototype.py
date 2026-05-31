@@ -1,7 +1,6 @@
 import math
 import random
 import matplotlib.pyplot as plt
-import numpy as np
 
 # ── GRID SETUP ──────────────────────────────────────
 GRID_W = 35

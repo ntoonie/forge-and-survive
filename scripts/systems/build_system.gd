@@ -19,7 +19,7 @@ func _ready():
 	ghost.size = Vector2(TILE_SIZE, TILE_SIZE)
 	ghost.color = Color(0.5, 0.5, 1.0, 0.5)
 	ghost.visible = false
-	get_tree().current_scene.add_child(ghost)
+	get_tree().current_scene.add_child.call_deferred(ghost)
 
 func _process(_delta):
 	if Input.is_action_just_pressed("toggle_build"):
@@ -72,6 +72,9 @@ func _place_structure():
 		structure = floor_spikes_scene.instantiate()
 	structure.global_position = ghost.global_position + Vector2(TILE_SIZE / 2, TILE_SIZE / 2)
 	get_tree().current_scene.add_child(structure)
+	# Notify pathfinder about new obstacle (walls and towers block movement)
+	if selected_structure == "wall" or selected_structure == "tower":
+		SAPathfinder.add_wall(structure.global_position)
 	_deduct_cost()
 	print("Placed: ", selected_structure)
 
