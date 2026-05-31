@@ -28,7 +28,7 @@ func _ready():
 func _on_gear_pressed():
 	if pause_menu_instance == null:
 		pause_menu_instance = pause_menu_scene.instantiate()
-		get_tree().current_scene.add_child(pause_menu_instance)
+		add_child(pause_menu_instance)
 	pause_menu_instance.visible = true
 	get_tree().paused = true
 
