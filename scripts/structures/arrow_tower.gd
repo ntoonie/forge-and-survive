@@ -8,7 +8,7 @@ var current_health: int
 var enemies_in_range: Array = []
 
 # ── Shot durability ────────────────────────────────────────────
-var shots_remaining: int = 15
+var shots_remaining: int = 8
 
 func _ready():
 	current_health = max_health

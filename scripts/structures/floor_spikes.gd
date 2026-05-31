@@ -1,13 +1,13 @@
 extends Area2D
 
-const TICK_DAMAGE   : int   = 20      # 2× arrow tower's 10
-const TICK_INTERVAL : float = 0.5
+const TICK_DAMAGE   : int   = 15      # 2× arrow tower's 10
+const TICK_INTERVAL : float = 1
 
 # Enemies currently standing on the spikes
 var _bodies_in_zone : Array[Node] = []
 
 # ── Spike durability ───────────────────────────────────────────
-var ticks_remaining: int = 30
+var ticks_remaining: int = 15
 
 @onready var tick_timer : Timer = $DamageTimer
 
@@ -29,6 +29,7 @@ func _ready() -> void:
 func _on_body_entered(body: Node) -> void:
     if body.is_in_group("enemy"):
         _bodies_in_zone.append(body)
+        print("Floor spike contacted enemy! Enemy health: ", body.current_health)
 
 
 func _on_body_exited(body: Node) -> void:

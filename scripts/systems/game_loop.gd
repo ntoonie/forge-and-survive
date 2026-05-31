@@ -11,6 +11,8 @@ signal phase_changed(new_phase)
 signal game_won
 
 func _ready():
+	wave_evolver = WaveEvolver.new()
+	add_child(wave_evolver)
 	phase_changed.emit(Phase.BUILD)
 
 func _process(delta):
@@ -53,7 +55,7 @@ func skip_to_night():
 	if current_phase == Phase.BUILD:
 		build_timer = 0
 
-@onready var wave_evolver: WaveEvolver = $WaveEvolver
+var wave_evolver: WaveEvolver
 
 func _on_night_ended() -> void:
 	var forge = get_tree().get_first_node_in_group("forge")

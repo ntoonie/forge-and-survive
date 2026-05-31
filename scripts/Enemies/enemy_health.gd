@@ -146,9 +146,11 @@ func _check_pile_attack(collision: KinematicCollision2D, forge: Node2D) -> void:
 	var collider = collision.get_collider()
 	if not collider: return
 
-	# ── Notify wall structures of the physical collision (durability wear) ──
+	# ── Attack wall structures with the same cooldown as the forge ──
 	if collider.has_node("StructureHealth"):
-		collider.get_node("StructureHealth").register_collision()
+		if attack_cooldown <= 0.0:
+			collider.get_node("StructureHealth").take_damage(10)
+			attack_cooldown = ATTACK_INTERVAL
 
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
 	# If bumping into the forge, or into another enemy while close to the forge

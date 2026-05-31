@@ -12,8 +12,6 @@ size = Vector2(32, 32)
 
 [node name="FloorSpikes" type="Area2D" unique_id=2002000001]
 script = ExtResource("1_spikes")
-collision_layer = 0
-collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2002000002]
 shape = SubResource("RectangleShape2D_spikes")

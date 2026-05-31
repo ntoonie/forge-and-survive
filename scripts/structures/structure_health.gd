@@ -11,6 +11,7 @@ func _ready():
 
 func take_damage(amount: int):
 	current_health -= amount
+	print("Wall attacked by enemy! Health: ", current_health)
 	if current_health <= 0:
 		_destroy()
 

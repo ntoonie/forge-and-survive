@@ -19,7 +19,7 @@ func _ready():
 	ghost.size = Vector2(TILE_SIZE, TILE_SIZE)
 	ghost.color = Color(0.5, 0.5, 1.0, 0.5)
 	ghost.visible = false
-	get_tree().current_scene.add_child(ghost)
+	get_tree().current_scene.add_child.call_deferred(ghost)
 
 func _process(_delta):
 	if Input.is_action_just_pressed("toggle_build"):
