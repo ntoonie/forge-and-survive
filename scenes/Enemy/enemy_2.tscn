@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://ci4wnnes6pq7y"]
+
+[ext_resource type="Texture2D" uid="uid://pr4wmo2qriyv" path="res://assets/sprites/enemies/enemy_2.png" id="1_enemy2"]
+[ext_resource type="Script" uid="uid://bag2seulvb5k6" path="res://scripts/Enemies/enemy_health.gd" id="2_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e2col"]
+size = Vector2(17.98005, 16.982544)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2idle0"]
+atlas = ExtResource("1_enemy2")
+region = Rect2(6, 8, 21, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2idle1"]
+atlas = ExtResource("1_enemy2")
+region = Rect2(27, 8, 21, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2run0"]
+atlas = ExtResource("1_enemy2")
+region = Rect2(27, 28, 21, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2run1"]
+atlas = ExtResource("1_enemy2")
+region = Rect2(48, 28, 21, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2run2"]
+atlas = ExtResource("1_enemy2")
+region = Rect2(69, 28, 21, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_e2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2idle0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2idle1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2run0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2run1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2run2")
+}],
+"loop": true,
+"name": &"running",
+"speed": 5.0
+}]
+
+[node name="Enemy2" type="CharacterBody2D"]
+scale = Vector2(2.005, 2.005)
+script = ExtResource("2_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(114.21446, 23.94015)
+scale = Vector2(1.45, 1.45)
+sprite_frames = SubResource("SpriteFrames_e2")
+autoplay = "running"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(113.715706, 22.942642)
+shape = SubResource("RectangleShape2D_e2col")
+debug_color = Color(0, 0, 0, 0)

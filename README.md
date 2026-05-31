@@ -78,6 +78,8 @@ The gameplay transitions dynamically between two distinct states:
 ### 2. Grid Placement & Construction System (`build_system.gd`)
 *   **Grid Size:** 32x32 pixel cells.
 *   **Placement Mechanics:** Pressing `B` toggles Build Mode. A dynamic color-coded preview ghost (semi-transparent grid block) tracks the snapped mouse coordinate.
+*   **Build Range Limit:** Players can only construct structures within a **4-block radius circle** (128 pixels) around their character. Attempting to build outside this range prints a debug warning and cancels placement.
+*   **Structure Stacking Prevention:** Structures cannot be stacked on top of each other. Placements are validated against a dynamic `"structures"` group check, ensuring you cannot stack walls, towers, or floor spikes in the same grid coordinate.
 *   **Material Costs:**
 	*   **Wall:** `1 Stone` — Blocks enemy navigation completely.
 	*   **Arrow Tower:** `1 Wood + 1 Iron` — Automatically shoots the nearest target in range.
@@ -87,6 +89,7 @@ The gameplay transitions dynamically between two distinct states:
 *   **Wall (`wall.tscn`):** Hard solid obstacle with 100 HP, routing enemies through secondary pathways.
 *   **Arrow Tower (`arrow_tower.gd`):** Uses an Area2D sensor to track encroaching enemies. Every `ShootTimer` interval, it shoots for **10 damage**.
 *   **Floor Spikes (`floor_spikes.gd`):** An Area2D structure designed with a periodic tick timer (`0.8s` interval) that deals **20 damage** (double the tower's power!) to all overlapping raiders, bypassing movement blockages to weaken incoming waves.
+*   **Central Forge (`forge.gd`):** The primary objective (300 HP) that players must protect. Its health is dynamically tracked by a beautiful, large **Boss-style health bar** centered at the top of the map, featuring pixel-perfect progress textures and dynamic value matching.
 
 ### 4. Advanced Simulated Annealing AI (`sa_pathfinder.gd`, `enemy_health.gd`)
 Enemies navigate using a premium hybrid AI model combining grid mapping and local search heuristics:
@@ -97,6 +100,9 @@ Enemies navigate using a premium hybrid AI model combining grid mapping and loca
 *   **Stochastic Acceptance:** Even inferior path modifications are accepted with a probability of `P = e^(−ΔCost / T)`, enabling enemies to intelligently test flanking paths rather than getting funneled or trapped in predictable grid locks.
 *   **Angle-Sweep Escape:** If stuck or obstructed, enemies utilize an active angle-sweep algorithm to seamlessly slide past walls and continue their advance.
 *   **Swarm Pile-Up Logic:** Enemies in the back of a horde dynamically detect if they are clustered against other raiders attacking the Forge, allowing the entire depth of the pile to coordinate and deliver simultaneous structural damage.
+*   **Dynamic Boundary Extensions:** Map boundaries are expanded by **2 flooring tiles (64 px) above and below**, and **1 flooring tile (32 px) to the right**, allowing both player and enemies to move dynamically in this outer space.
+*   **Aligned Pathfinding Translation:** The pathfinder coordinate conversions are dynamically offset to match the global coordinates (`-10, 90`) and grid sizes are expanded to `36 × 23` cells, completely resolving off-by-one errors and out-of-bounds calculations for the south-most spawners.
+*   **Out-of-Bounds Prevention:** Spawn points are strategically placed exactly **2 pixels inside** the map boundary limit, guaranteeing that enemies always spawn on valid, walkable flooring.
 *   **Future AI Expansion:** Plans are in place to augment the Simulated Annealing macro-pathfinding with **Decision Trees** for micro-tactical state management (e.g., dodging, breaking structures) and **Genetic Algorithms** to adapt wave generation and enemy stats based on the player's defense strategy.
 
 ---
@@ -143,9 +149,9 @@ Following the strict, step-by-step milestone hierarchy from `forge_and_survive_r
 *   **Status:** **100% Completed**
 *   *Milestones:* Python SA algorithm prototyping, GDScript SA Pathfinder implementation, waypoint cost assessments (length vs. spike trap costs), and thermal cooling scheduler loops.
 
-### 🔄 Phase 7: Polish & Balancing
-*   **Status:** **In Progress**
-*   *Milestones:* Adjusting damage values (e.g., doubling Floor Spikes damage to `20` per tick relative to Tower's `10`), tuning spawn waves, UI feedback optimization, and final build package generation.
+### ✅ Phase 7: Polish & Balancing
+*   **Status:** **100% Completed**
+*   *Milestones:* Doubling Floor Spikes damage to `20` per tick relative to Tower's `10`, implementing player build range limits, structure overlap validation, expanded dynamic boundaries, and integrating a fully scaled boss-style health bar for the central Forge.
 
 
 > [!TIP]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b76cs6uwt6174"
-path="res://.godot/imported/enemy_boss.png-2bd2a90d7b2c18f45ba9734c94631fd4.ctex"
+uid="uid://ck0j8wfssdekm"
+path="res://.godot/imported/craiyon_030452_A_2048x2048_16x16_texture_atlas_for_a_voxel_game_.png-b0841f446b21b8f517cd02d5c0296c69.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/enemy_boss.png"
-dest_files=["res://.godot/imported/enemy_boss.png-2bd2a90d7b2c18f45ba9734c94631fd4.ctex"]
+source_file="res://assets/sprites/craiyon_030452_A_2048x2048_16x16_texture_atlas_for_a_voxel_game_.png"
+dest_files=["res://.godot/imported/craiyon_030452_A_2048x2048_16x16_texture_atlas_for_a_voxel_game_.png-b0841f446b21b8f517cd02d5c0296c69.ctex"]
 
 [params]
 

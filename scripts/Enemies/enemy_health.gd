@@ -7,6 +7,7 @@ const WAYPOINT_REACH = 12.0              # Distance to consider a waypoint "reac
 
 @export var max_health: int = 30
 var current_health: int
+var enemy_damage: int = 10
 
 # ── SA PATH ──────────────────────────────────────────
 var sa_path: PackedVector2Array = []
@@ -42,6 +43,7 @@ func apply_wave_config(config: Dictionary):
 	max_health = config["enemy_health"]
 	current_health = max_health
 	SPEED = config["enemy_speed"]
+	enemy_damage = config.get("enemy_damage", 10)
 
 func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_collide
 	var forge = get_tree().get_first_node_in_group("forge")
@@ -132,6 +134,10 @@ func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_co
 			# Still blocked — keep sweeping next frame
 			_update_sprite(_sweep_dir)
 
+	# Clamp position to map boundaries (global)
+	global_position.x = clamp(global_position.x, -10.0, 1142.0)
+	global_position.y = clamp(global_position.y, 90.0, 826.0)
+
 # Returns the closest point on the forge's 32x32 collision box
 func _closest_forge_point(forge_pos: Vector2) -> Vector2:
 	var box_min = forge_pos - Vector2(16, 16)
@@ -149,7 +155,7 @@ func _check_pile_attack(collision: KinematicCollision2D, forge: Node2D) -> void:
 	# ── Attack wall structures with the same cooldown as the forge ──
 	if collider.has_node("StructureHealth"):
 		if attack_cooldown <= 0.0:
-			collider.get_node("StructureHealth").take_damage(10)
+			collider.get_node("StructureHealth").take_damage(enemy_damage)
 			attack_cooldown = ATTACK_INTERVAL
 
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
@@ -172,7 +178,7 @@ func _attack_forge(forge = null):
 	if forge == null:
 		forge = get_tree().get_first_node_in_group("forge")
 	if forge:
-		forge.take_damage(10)
+		forge.take_damage(enemy_damage)
 		print("Forge attacked! Health: ", forge.current_health)
 	# Removed queue_free() to keep enemy alive and attacking
 

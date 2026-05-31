@@ -63,6 +63,24 @@ func _place_structure():
 	if not _can_afford():
 		print("Not enough resources!")
 		return
+
+	var build_pos = ghost.global_position + Vector2(TILE_SIZE / 2, TILE_SIZE / 2)
+
+	# 1. Do not allow building further than 4 block radius (4 * 32 = 128 pixels) from the player
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		var distance = player.global_position.distance_to(build_pos)
+		if distance > 128.0:
+			print("Cannot build: Too far from player!")
+			return
+
+	# 2. Do not allow placing structures on top of each other
+	var existing_structures = get_tree().get_nodes_in_group("structures")
+	for s in existing_structures:
+		if is_instance_valid(s) and s.global_position.distance_to(build_pos) < 5.0:
+			print("Cannot build: Structure already exists here!")
+			return
+
 	var structure
 	if selected_structure == "wall":
 		structure = wall_scene.instantiate()
@@ -70,8 +88,10 @@ func _place_structure():
 		structure = tower_scene.instantiate()
 	else:
 		structure = floor_spikes_scene.instantiate()
-	structure.global_position = ghost.global_position + Vector2(TILE_SIZE / 2, TILE_SIZE / 2)
+	structure.global_position = build_pos
 	get_tree().current_scene.add_child(structure)
+	structure.add_to_group("structures")
+
 	# Notify pathfinder about new obstacle (walls and towers block movement)
 	if selected_structure == "wall" or selected_structure == "tower":
 		SAPathfinder.add_wall(structure.global_position)

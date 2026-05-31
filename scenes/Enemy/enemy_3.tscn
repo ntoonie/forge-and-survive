@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://ci4wones6pq7y"]
+
+[ext_resource type="Texture2D" uid="uid://dbx6gxuahl23r" path="res://assets/sprites/enemies/enemy_3.png" id="1_enemy3"]
+[ext_resource type="Script" uid="uid://bag2seulvb5k6" path="res://scripts/Enemies/enemy_health.gd" id="2_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e3col"]
+size = Vector2(17.98005, 16.982544)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3idle0"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(2, 3, 30, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3idle1"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(32, 3, 30, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3run0"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(32, 36, 29, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3run1"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(61, 36, 29, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3run2"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(90, 36, 29, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3run3"]
+atlas = ExtResource("1_enemy3")
+region = Rect2(3, 36, 29, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_e3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3idle0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3idle1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3run0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3run1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3run2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3run3")
+}],
+"loop": true,
+"name": &"running",
+"speed": 4.0
+}]
+
+[node name="Enemy3" type="CharacterBody2D"]
+scale = Vector2(3.0, 3.0)
+script = ExtResource("2_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(49.875313, 18.952618)
+scale = Vector2(1.45, 1.45)
+sprite_frames = SubResource("SpriteFrames_e3")
+autoplay = "running"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(50.37406, 21.446383)
+shape = SubResource("RectangleShape2D_e3col")
+debug_color = Color(0, 0, 0, 0)

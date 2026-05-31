@@ -18,5 +18,5 @@ shape = SubResource("RectangleShape2D_7hj8w")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=959442653]
 texture = SubResource("AtlasTexture_wall")
 
-[node name="HealthComponent" type="Node" parent="." unique_id=438030771]
+[node name="StructureHealth" type="Node" parent="." unique_id=438030771]
 script = ExtResource("1_1jefv")

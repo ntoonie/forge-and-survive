@@ -16,11 +16,13 @@ func _ready():
 	var gear = get_node_or_null("Control/GearButton")
 	if gear:
 		gear.ignore_texture_size = true
-		gear.stretch_mode = TextureButton.STRETCH_SCALE
-		gear.custom_minimum_size = Vector2(48, 48)
+		gear.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		gear.custom_minimum_size = Vector2(96, 96)
 		await get_tree().process_frame
-		gear.size = Vector2(98, 98)
-		gear.position = Vector2(1092, 8)
+		gear.size = Vector2(196, 196)
+		var screen_w = get_viewport().get_visible_rect().size.x
+		var margin_right = 2.0
+		gear.position = Vector2(screen_w - gear.size.x - margin_right, 1)
 		gear.pressed.connect(_on_gear_pressed)
 	else:
 		print("GearButton not found!")

@@ -1,8 +1,8 @@
 extends Node
 
 # ── Config ────────────────────────────────────────────────────
-const GRID_W         : int   = 35
-const GRID_H         : int   = 19
+const GRID_W         : int   = 36
+const GRID_H         : int   = 23
 const TILE           : int   = 32
 const T_INITIAL      : float = 5.0     # tuned down from prototype's 100
 const COOLING_RATE   : float = 0.97
@@ -11,6 +11,9 @@ const CORRIDOR_CLAMP : float = 2.5     # max cell drift from BFS baseline
 const WALL_PENALTY   : float = 1000.0
 const TRAP_PENALTY   : float = 50.0
 const TURN_WEIGHT    : float = 3.0
+
+const OFFSET_X       : float = -10.0
+const OFFSET_Y       : float = 90.0
 
 var wall_cells : Dictionary = {}   # cell : true
 var trap_cells : Dictionary = {}   # cell : true
@@ -27,12 +30,15 @@ func remove_wall(world_pos: Vector2) -> void:
 
 func _world_to_cell(world_pos: Vector2) -> Vector2i:
 	return Vector2i(
-		int(world_pos.x) / TILE,
-		int(world_pos.y) / TILE
+		int(world_pos.x - OFFSET_X) / TILE,
+		int(world_pos.y - OFFSET_Y) / TILE
 	)
 
 func _cell_to_world(cell: Vector2i) -> Vector2:
-	return Vector2(cell.x * TILE + TILE / 2, cell.y * TILE + TILE / 2)
+	return Vector2(
+		cell.x * TILE + OFFSET_X + TILE / 2,
+		cell.y * TILE + OFFSET_Y + TILE / 2
+	)
 
 
 # ── Convenience wrapper used by enemy_health.gd ───────────────
