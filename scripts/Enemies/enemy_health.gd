@@ -12,6 +12,10 @@ var current_health: int
 var sa_path: PackedVector2Array = []
 var path_index: int = 0
 
+# ── ATTACK COOLDOWN ──────────────────────────────────
+var attack_cooldown: float = 0.0
+const ATTACK_INTERVAL: float = 2.0
+
 # ── ANGLE-SWEEP ESCAPE STATE ─────────────────────────
 # Persists across physics frames so each frame advances
 # the sweep by one 15° step rather than oscillating.
@@ -61,8 +65,13 @@ func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_co
 
 	# ── Check arrival at forge ────────────────────────
 	var forge_edge = _closest_forge_point(forge_pos)
+	if attack_cooldown > 0.0:
+		attack_cooldown -= _delta
+
 	if global_position.distance_to(forge_edge) <= ATTACK_RANGE:
-		_attack_forge(forge)
+		if attack_cooldown <= 0.0:
+			_attack_forge(forge)
+			attack_cooldown = ATTACK_INTERVAL
 		return
 
 	# ── Move toward current target (angle-sweep escape) ──────────
@@ -75,6 +84,7 @@ func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_co
 		var motion: Vector2 = desired_dir * SPEED * _delta
 		var collision := move_and_collide(motion)
 		if collision:
+			_check_pile_attack(collision, forge)
 			# Hit something — start a fresh sweep from the desired dir
 			_sweep_dir         = desired_dir
 			_sweep_accumulated = 0.0
@@ -83,6 +93,8 @@ func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_co
 			_sweep_accumulated += SWEEP_STEP_DEG
 			var sweep_motion: Vector2 = _sweep_dir * SPEED * _delta
 			var sweep_col    := move_and_collide(sweep_motion)
+			if sweep_col:
+				_check_pile_attack(sweep_col, forge)
 			if not sweep_col:
 				# First step already clear — but stay in sweep mode
 				# so next frame we exit cleanly only if still clear.
@@ -109,6 +121,8 @@ func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_co
 
 		var sweep_motion: Vector2 = _sweep_dir * SPEED * _delta
 		var sweep_col    := move_and_collide(sweep_motion)
+		if sweep_col:
+			_check_pile_attack(sweep_col, forge)
 		if not sweep_col:
 			# Direction is clear — exit sweep mode, resume normal travel
 			_sweep_dir         = Vector2.ZERO
@@ -127,6 +141,18 @@ func _closest_forge_point(forge_pos: Vector2) -> Vector2:
 		clamp(global_position.y, box_min.y, box_max.y)
 	)
 
+func _check_pile_attack(collision: KinematicCollision2D, forge: Node2D) -> void:
+	if not collision: return
+	var collider = collision.get_collider()
+	if not collider: return
+	
+	var forge_pos = forge.global_position if forge else FORGE_POSITION
+	# If bumping into the forge, or into another enemy while close to the forge
+	if collider.is_in_group("forge") or (collider.is_in_group("enemy") and global_position.distance_to(forge_pos) < 150.0):
+		if attack_cooldown <= 0.0:
+			_attack_forge(forge)
+			attack_cooldown = ATTACK_INTERVAL
+
 func _update_sprite(direction: Vector2) -> void:
 	if anim:
 		if direction.x < 0:
@@ -142,7 +168,7 @@ func _attack_forge(forge = null):
 	if forge:
 		forge.take_damage(10)
 		print("Forge attacked! Health: ", forge.current_health)
-	queue_free()
+	# Removed queue_free() to keep enemy alive and attacking
 
 func take_damage(amount: int):
 	current_health -= amount
