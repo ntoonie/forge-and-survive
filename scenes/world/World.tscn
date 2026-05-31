@@ -455,7 +455,7 @@ animation = &"idle"
 position = Vector2(50.37406, 21.446383)
 shape = SubResource("RectangleShape2D_i08rc")
 
-[node name="BuildSystem" type="Node" parent="." unique_id=1886626186]
+[node name="BuildSystem" type="Node" parent="." unique_id=1886626186 groups=["build_system"]]
 script = ExtResource("6_i1jm3")
 
 [node name="Forge" parent="." unique_id=1444986659 instance=ExtResource("7_252at")]

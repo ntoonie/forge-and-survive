@@ -1,18 +1,31 @@
-[gd_scene format=3 uid="uid://tower_struct01"]
+[gd_scene format=3 uid="uid://beeuaxjxbdqbt"]
 
 [ext_resource type="Texture2D" uid="uid://clty4r4tpm7m1" path="res://assets/sprites/structure.png" id="1_struct"]
+[ext_resource type="Script" uid="uid://db8tcba1wjaam" path="res://scripts/structures/arrow_tower.gd" id="1_y02ym"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tower"]
+size = Vector2(32, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tower"]
 atlas = ExtResource("1_struct")
 region = Rect2(12, 57, 34, 40)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tower"]
-size = Vector2(32, 48)
+[sub_resource type="CircleShape2D" id="CircleShape2D_aiuvr"]
+radius = 150.0
 
 [node name="Tower" type="StaticBody2D" unique_id=2001000001]
+script = ExtResource("1_y02ym")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2001000002]
 shape = SubResource("RectangleShape2D_tower")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2001000003]
 texture = SubResource("AtlasTexture_tower")
+
+[node name="DetectionRange" type="Area2D" parent="." unique_id=1805853091]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionRange" unique_id=1979446048]
+shape = SubResource("CircleShape2D_aiuvr")
+
+[node name="ShootTimer" type="Timer" parent="." unique_id=612970683]
+autostart = true

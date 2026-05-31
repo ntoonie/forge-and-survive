@@ -67,6 +67,7 @@ func _on_enemy_died() -> void:
 
 
 func _check_wave_cleared() -> void:
+	print("Checking wave clear: remaining = ", enemies_remaining, "spawning = ", is_spawning)
 	if enemies_remaining <= 0 and not is_spawning:
 		print("Wave ", current_wave, " cleared!")
 		wave_cleared.emit(current_wave)

@@ -13,7 +13,7 @@ func _process(_delta):
 
 	var game_loop = get_tree().get_first_node_in_group("game_loop")
 	if game_loop:
-		if game_loop.current_phase == 0:  # BUILD
+		if game_loop.current_phase == 0:
 			timer_label.text = "Day: " + str(int(game_loop.get_time_remaining())) + "s"
 			wave_label.text = "Wave: " + str(game_loop.wave_number + 1) + "/" + str(game_loop.max_waves)
 		else:

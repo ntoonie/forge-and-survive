@@ -5,7 +5,7 @@ enum Phase { BUILD, DEFENSE }
 var current_phase = Phase.BUILD
 var build_timer = 10.0
 var wave_number = 0
-var max_waves = 1
+var max_waves = 3
 
 signal phase_changed(new_phase)
 signal game_won
@@ -27,9 +27,11 @@ func _start_defense_phase():
 	# Start the wave
 	var wave_manager = get_tree().get_first_node_in_group("wave_manager")
 	if wave_manager:
+		print("Wave manager found!")
 		wave_manager.start_wave(wave_number)
 		wave_manager.wave_cleared.connect(_on_wave_cleared, CONNECT_ONE_SHOT)
-
+	else:
+		print("Wave manager not found!")
 func _on_wave_cleared(_wave_number):
 	print("Wave cleared! Returning to day...")
 	if wave_number >= max_waves:

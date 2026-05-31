@@ -21,12 +21,12 @@ forge-and-survive/
 New-Forge/
 ├── CMakeLists.txt              # CMake build configuration fetching Raylib 5.0
 └── src/
-    ├── main.cpp                # Application entry point and main loop
-    ├── game.h/.cpp             # Global state and Day/Night loop management
-    ├── player.h/.cpp           # Player controller and rendering
-    ├── world.h/.cpp            # Tilemap rendering and resource nodes
-    ├── enemy_ai.h/.cpp         # Simulated Annealing AI and enemies
-    └── build_system.h/.cpp     # Structure placement logic
+	├── main.cpp                # Application entry point and main loop
+	├── game.h/.cpp             # Global state and Day/Night loop management
+	├── player.h/.cpp           # Player controller and rendering
+	├── world.h/.cpp            # Tilemap rendering and resource nodes
+	├── enemy_ai.h/.cpp         # Simulated Annealing AI and enemies
+	└── build_system.h/.cpp     # Structure placement logic
 ```
 
 ## System Architecture (Raylib 5.0 C++ Port)
