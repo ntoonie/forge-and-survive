@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameData="*uid://16fpn78veaxe"
 SAPathfinder="*uid://clc46e0ce52v6"
+AudioManager="*uid://dl53usgk10h35"
 
 [input]
 

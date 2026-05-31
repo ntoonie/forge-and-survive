@@ -20,6 +20,7 @@ func _ready():
 
 func _notification(what):
 	if what == NOTIFICATION_VISIBILITY_CHANGED and visible:
+		AudioManager.stop()
 		var center = get_viewport_rect().size / 2
 		$ResumeButton.position = Vector2(center.x - 100, center.y - 110)
 		$RestartButton.position = Vector2(center.x - 100, center.y - 30)
@@ -28,6 +29,7 @@ func _notification(what):
 func _on_resume_pressed():
 	get_tree().paused = false
 	visible = false
+	AudioManager.resume()
 
 func _on_restart_pressed():
 	get_tree().paused = false
