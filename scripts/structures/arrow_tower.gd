@@ -1,8 +1,8 @@
 extends StaticBody2D
 
 @export var max_health: int = 100
-@export var damage: int = 10
-@export var attack_range: float = 150.0
+@export var damage: int = 20
+@export var attack_range: float = 200.0
 
 const ProjectileScene = preload("res://scenes/structures/arrow_projectile.tscn")
 

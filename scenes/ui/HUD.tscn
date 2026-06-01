@@ -21,15 +21,15 @@ offset_bottom = 50.0
 
 [node name="IronLabel" type="Label" parent="Control/ResourcePanel" unique_id=61142131]
 layout_mode = 2
-text = "Iron: 0"
+text = "🟡 Iron: 0"
 
 [node name="WoodLabel" type="Label" parent="Control/ResourcePanel" unique_id=481915591]
 layout_mode = 2
-text = "Wood: 0"
+text = "🟫 Wood: 0"
 
 [node name="StoneLabel" type="Label" parent="Control/ResourcePanel" unique_id=1365315056]
 layout_mode = 2
-text = "Stone: 0"
+text = "⬜ Stone: 0"
 
 [node name="TimerLabel" type="Label" parent="Control/ResourcePanel" unique_id=1244699916]
 layout_mode = 2
@@ -39,6 +39,15 @@ text = "Day: 60s"
 layout_mode = 2
 text = "Wave: 1/5
 "
+
+[node name="Legends" type="Label" parent="Control/ResourcePanel" unique_id=1946175411]
+layout_mode = 2
+text = "B = Build Mode
+1 = Wall (3 stones)
+2 = Tower (2 woods, 2 irons)
+3 = Spikes (2 woods, 2 stone)
+E = Gather"
+vertical_alignment = 1
 
 [node name="GearButton" type="TextureButton" parent="Control" unique_id=1780611435]
 layout_mode = 0

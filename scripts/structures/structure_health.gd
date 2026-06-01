@@ -1,10 +1,10 @@
 extends Node
 
-@export var max_health: int = 300
+@export var max_health: int = 200
 var current_health: int
 
 # ── Collision durability ───────────────────────────────────────
-var collisions_remaining: int = 10
+var collisions_remaining: int = 5
 
 var _contact_area: Area2D
 var _tick_timer: Timer

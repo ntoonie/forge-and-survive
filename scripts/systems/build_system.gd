@@ -2,9 +2,9 @@ extends Node
 
 const TILE_SIZE = 32
 const COSTS = {
-	"wall": {"stone": 1},
-	"tower": {"wood": 1, "iron": 1},
-	"floor_spikes": {"wood": 1, "stone": 1}
+	"wall": {"stone": 3},
+	"tower": {"wood": 2, "iron": 2},
+	"floor_spikes": {"wood": 2, "stone": 2}
 }
 
 var selected_structure = "wall"
