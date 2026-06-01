@@ -49,9 +49,11 @@ func _spawn_projectile(target: Node) -> void:
 	if not is_instance_valid(target):
 		return
 
+	var aim_direction = (target.global_position - global_position).normalized()
+
 	var projectile = ProjectileScene.instantiate()
-	projectile.global_position = global_position + Vector2(0, -12)
-	projectile.setup(target, damage)
+	projectile.global_position = global_position + aim_direction * 16.0
+	projectile.setup(target, damage, global_position)
 
 	var current_scene = get_tree().current_scene
 	if current_scene:
