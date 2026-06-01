@@ -1,29 +1,55 @@
 extends CharacterBody2D
 
 var SPEED = 80.0
-const FORGE_POSITION = Vector2(576, 320) # Aligned center of the Forge
-const ATTACK_RANGE   = 8.0               # Distance from the edge of the forge hitbox
-const WAYPOINT_REACH = 12.0              # Distance to consider a waypoint "reached"
+const FORGE_POSITION = Vector2(576, 320)
+const ATTACK_RANGE   = 8.0
+const WAYPOINT_REACH = 12.0
 
 @export var max_health: int = 30
 var current_health: int
 var enemy_damage: int = 10
 
-# ── SA PATH ──────────────────────────────────────────
+# ── SA PATH ───────────────────────────────────────────────────
 var sa_path: PackedVector2Array = []
 var path_index: int = 0
 
-# ── ATTACK COOLDOWN ──────────────────────────────────
+# ── ATTACK COOLDOWN ───────────────────────────────────────────
 var attack_cooldown: float = 0.0
 const ATTACK_INTERVAL: float = 2.0
 
-# ── ANGLE-SWEEP ESCAPE STATE ─────────────────────────
-# Persists across physics frames so each frame advances
-# the sweep by one 15° step rather than oscillating.
-const SWEEP_STEP_DEG  := 15.0            # degrees rotated per blocked frame
-const SWEEP_MAX_DEG   := 360.0           # full circle before giving up
-var _sweep_dir        := Vector2.ZERO    # current candidate direction
-var _sweep_accumulated := 0.0           # total degrees swept this episode
+# ── ESCAPE STATE MACHINE ──────────────────────────────────────
+#
+#  NORMAL  → move straight toward target
+#              collision → store wall normal, enter BACK_UP
+#
+#  BACK_UP → push along wall normal for BACKUP_DURATION seconds
+#              timer done → pick the wall-parallel that faces the
+#              target, enter STEER
+#
+#  STEER   → travel in _steer_dir every frame (no burst-peek logic)
+#             Exit condition: a test-only probe of STEER_CLEAR_PX
+#             pixels in desired_dir succeeds WITHOUT collision.
+#             That proves the obstacle edge is behind us, not just
+#             that one frame's tiny motion happened to be free.
+#             Flip side only when hitting something NEW while steering
+#             AND only once per steer session (prevents oscillation).
+#             Give up after STEER_MAX_PX → SA repath.
+
+enum EscapePhase { NORMAL, BACK_UP, STEER }
+
+const BACKUP_DURATION  : float = 0.22   # seconds pushing away from wall
+const BACKUP_SPEED_MUL : float = 0.55   # speed fraction while backing up
+const STEER_SPEED_MUL  : float = 0.90   # speed fraction while steering
+const STEER_CLEAR_PX   : float = 28.0   # probe distance that must be clear to exit steer
+const STEER_MAX_PX     : float = 220.0  # total steer distance before SA repath
+const STEER_FLIP_ONCE  : bool  = true   # allow at most one direction flip per steer session
+
+var _escape_phase    : EscapePhase = EscapePhase.NORMAL
+var _backup_dir      : Vector2     = Vector2.ZERO
+var _backup_timer    : float       = 0.0
+var _steer_dir       : Vector2     = Vector2.ZERO
+var _steer_traveled  : float       = 0.0
+var _steer_flipped   : bool        = false   # has the direction already been flipped once?
 
 signal died
 
@@ -32,113 +58,131 @@ signal died
 func _ready():
 	current_health = max_health
 	add_to_group("enemy")
-
-	# Request an SA-optimised path from spawn → Forge at wave start
 	var forge = get_tree().get_first_node_in_group("forge")
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
 	sa_path = SAPathfinder.find_path(global_position, forge_pos)
 	path_index = 0
 
 func apply_wave_config(config: Dictionary):
-	max_health = config["enemy_health"]
+	max_health     = config["enemy_health"]
 	current_health = max_health
-	SPEED = config["enemy_speed"]
-	enemy_damage = config.get("enemy_damage", 10)
+	SPEED          = config["enemy_speed"]
+	enemy_damage   = config.get("enemy_damage", 10)
 
-func _physics_process(_delta: float) -> void:  # _delta forwarded to move_and_collide
-	var forge = get_tree().get_first_node_in_group("forge")
+func _physics_process(_delta: float) -> void:
+	var forge     = get_tree().get_first_node_in_group("forge")
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
 
-	# ── Determine current target ──────────────────────
-	# Follow SA waypoints while available; then target the forge directly.
+	# ── Resolve current waypoint target ───────────────────────
 	var target_pos: Vector2
 	if sa_path.size() > 0 and path_index < sa_path.size():
 		target_pos = sa_path[path_index]
-
-		# Advance to next waypoint when close enough
 		if global_position.distance_to(target_pos) <= WAYPOINT_REACH:
 			path_index += 1
-			# If we just consumed the last waypoint, aim for forge edge
 			if path_index >= sa_path.size():
 				target_pos = _closest_forge_point(forge_pos)
 	else:
-		# No SA path (or exhausted) — aim for closest edge of the forge hitbox
 		target_pos = _closest_forge_point(forge_pos)
 
-	# ── Check arrival at forge ────────────────────────
+	# ── Forge attack check ─────────────────────────────────────
 	var forge_edge = _closest_forge_point(forge_pos)
 	if attack_cooldown > 0.0:
 		attack_cooldown -= _delta
-
 	if global_position.distance_to(forge_edge) <= ATTACK_RANGE:
 		if attack_cooldown <= 0.0:
 			_attack_forge(forge)
 			attack_cooldown = ATTACK_INTERVAL
 		return
 
-	# ── Move toward current target (angle-sweep escape) ──────────
-	# Uses move_and_collide() so we get an explicit collision result
-	# each frame without Godot's built-in slide behaviour masking it.
 	var desired_dir := (target_pos - global_position).normalized()
 
-	if _sweep_dir == Vector2.ZERO:
-		# ── Normal travel: try the direct desired direction ───────
-		var motion: Vector2 = desired_dir * SPEED * _delta
-		var collision := move_and_collide(motion)
-		if collision:
-			_check_pile_attack(collision, forge)
-			# Hit something — start a fresh sweep from the desired dir
-			_sweep_dir         = desired_dir
-			_sweep_accumulated = 0.0
-			# Immediately take the first 15° step this frame
-			_sweep_dir = _sweep_dir.rotated(deg_to_rad(SWEEP_STEP_DEG))
-			_sweep_accumulated += SWEEP_STEP_DEG
-			var sweep_motion: Vector2 = _sweep_dir * SPEED * _delta
-			var sweep_col    := move_and_collide(sweep_motion)
-			if sweep_col:
-				_check_pile_attack(sweep_col, forge)
-			if not sweep_col:
-				# First step already clear — but stay in sweep mode
-				# so next frame we exit cleanly only if still clear.
-				_update_sprite(_sweep_dir)
+	# ── FSM ───────────────────────────────────────────────────
+	match _escape_phase:
+
+		EscapePhase.NORMAL:
+			var col : KinematicCollision2D = move_and_collide(desired_dir * SPEED * _delta)
+			if col:
+				_check_pile_attack(col, forge)
+				_backup_dir   = col.get_normal()
+				_backup_timer = BACKUP_DURATION
+				_escape_phase = EscapePhase.BACK_UP
+				_update_sprite(_backup_dir)
 			else:
-				_update_sprite(_sweep_dir)   # still moving, just blocked
-		else:
-			# Clear path — stay in normal mode
-			_update_sprite(desired_dir)
-	else:
-		# ── Sweep mode: advance one 15° step clockwise ───────────
-		if _sweep_accumulated >= SWEEP_MAX_DEG:
-			# Full 360° with no clear angle — request a fresh SA path
-			_sweep_dir         = Vector2.ZERO
-			_sweep_accumulated = 0.0
-			var forge_r = get_tree().get_first_node_in_group("forge")
-			var fp      = forge_r.global_position if forge_r else FORGE_POSITION
-			sa_path    = SAPathfinder.find_path(global_position, fp)
-			path_index = 0
-			return
+				_update_sprite(desired_dir)
 
-		_sweep_dir = _sweep_dir.rotated(deg_to_rad(SWEEP_STEP_DEG))
-		_sweep_accumulated += SWEEP_STEP_DEG
+		EscapePhase.BACK_UP:
+			_backup_timer -= _delta
+			var back_col : KinematicCollision2D = move_and_collide(
+				_backup_dir * SPEED * BACKUP_SPEED_MUL * _delta
+			)
+			if back_col:
+				_check_pile_attack(back_col, forge)
+			_update_sprite(_backup_dir)
 
-		var sweep_motion: Vector2 = _sweep_dir * SPEED * _delta
-		var sweep_col    := move_and_collide(sweep_motion)
-		if sweep_col:
-			_check_pile_attack(sweep_col, forge)
-		if not sweep_col:
-			# Direction is clear — exit sweep mode, resume normal travel
-			_sweep_dir         = Vector2.ZERO
-			_sweep_accumulated = 0.0
-			_update_sprite(desired_dir)
-		else:
-			# Still blocked — keep sweeping next frame
-			_update_sprite(_sweep_dir)
+			if _backup_timer <= 0.0:
+				# Pick the wall-parallel (perpendicular to wall normal) that
+				# points most toward the target.  This is the direction that
+				# carries the enemy around the obstacle edge, not back into it.
+				var perp_a : Vector2 = Vector2(-_backup_dir.y,  _backup_dir.x)
+				var perp_b : Vector2 = Vector2( _backup_dir.y, -_backup_dir.x)
+				_steer_dir    = perp_a if perp_a.dot(desired_dir) >= perp_b.dot(desired_dir) \
+								else perp_b
+				_steer_traveled = 0.0
+				_steer_flipped  = false
+				_escape_phase   = EscapePhase.STEER
 
-	# Clamp position to map boundaries (global)
+		EscapePhase.STEER:
+			# ── Give-up guard ──────────────────────────────────────
+			if _steer_traveled >= STEER_MAX_PX:
+				_escape_phase = EscapePhase.NORMAL
+				var forge_r   = get_tree().get_first_node_in_group("forge")
+				var fp        = forge_r.global_position if forge_r else FORGE_POSITION
+				sa_path       = SAPathfinder.find_path(global_position, fp)
+				path_index    = 0
+				return
+
+			# ── Move laterally ─────────────────────────────────────
+			var step      : float                = SPEED * STEER_SPEED_MUL * _delta
+			var steer_col : KinematicCollision2D = move_and_collide(_steer_dir * step)
+			_steer_traveled += step
+
+			if steer_col:
+				# Hit a new obstacle while steering.
+				_check_pile_attack(steer_col, forge)
+				# Flip direction once per steer session to try the other side.
+				# After that, give up immediately and repath — enemy is cornered.
+				if not _steer_flipped:
+					_steer_dir     = -_steer_dir
+					_steer_flipped = true
+					_steer_traveled = 0.0   # fresh budget for the new direction
+				else:
+					# Both sides blocked — repath from current position
+					_escape_phase = EscapePhase.NORMAL
+					var forge_r   = get_tree().get_first_node_in_group("forge")
+					var fp        = forge_r.global_position if forge_r else FORGE_POSITION
+					sa_path       = SAPathfinder.find_path(global_position, fp)
+					path_index    = 0
+					return
+			else:
+				# Steer move succeeded.  Now test a STEER_CLEAR_PX probe
+				# in desired_dir.  Only exit when that probe is also clear —
+				# this confirms the obstacle edge is behind us, not just that
+				# one frame of sideways movement happened to not collide.
+				var probe_col : KinematicCollision2D = move_and_collide(
+					desired_dir * STEER_CLEAR_PX, true
+				)
+				if not probe_col:
+					# Forward is clear — resume normal movement
+					_escape_phase = EscapePhase.NORMAL
+
+			_update_sprite(_steer_dir)
+
+	# Map boundary clamp
 	global_position.x = clamp(global_position.x, -10.0, 1142.0)
 	global_position.y = clamp(global_position.y, 90.0, 826.0)
 
-# Returns the closest point on the forge's 32x32 collision box
+# ── Helpers ───────────────────────────────────────────────────
+
 func _closest_forge_point(forge_pos: Vector2) -> Vector2:
 	var box_min = forge_pos - Vector2(16, 16)
 	var box_max = forge_pos + Vector2(16, 16)
@@ -151,16 +195,13 @@ func _check_pile_attack(collision: KinematicCollision2D, forge: Node2D) -> void:
 	if not collision: return
 	var collider = collision.get_collider()
 	if not collider: return
-
-	# ── Attack wall structures with the same cooldown as the forge ──
 	if collider.has_node("StructureHealth"):
 		if attack_cooldown <= 0.0:
 			collider.get_node("StructureHealth").take_damage(enemy_damage)
 			attack_cooldown = ATTACK_INTERVAL
-
 	var forge_pos = forge.global_position if forge else FORGE_POSITION
-	# If bumping into the forge, or into another enemy while close to the forge
-	if collider.is_in_group("forge") or (collider.is_in_group("enemy") and global_position.distance_to(forge_pos) < 150.0):
+	if collider.is_in_group("forge") or \
+	   (collider.is_in_group("enemy") and global_position.distance_to(forge_pos) < 150.0):
 		if attack_cooldown <= 0.0:
 			_attack_forge(forge)
 			attack_cooldown = ATTACK_INTERVAL
@@ -180,7 +221,6 @@ func _attack_forge(forge = null):
 	if forge:
 		forge.take_damage(enemy_damage)
 		print("Forge attacked! Health: ", forge.current_health)
-	# Removed queue_free() to keep enemy alive and attacking
 
 func take_damage(amount: int):
 	current_health -= amount

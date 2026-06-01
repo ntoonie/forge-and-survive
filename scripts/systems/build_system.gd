@@ -95,6 +95,11 @@ func _place_structure():
 	# Notify pathfinder about new obstacle (walls and towers block movement)
 	if selected_structure == "wall" or selected_structure == "tower":
 		SAPathfinder.add_wall(structure.global_position)
+		
+		# Notify all living enemies to repath from their current position
+		for enemy in get_tree().get_nodes_in_group("enemy"):
+			if enemy.has_method("request_repath"):
+				enemy.request_repath()
 	_deduct_cost()
 	print("Placed: ", selected_structure)
 
